@@ -221,7 +221,6 @@ export function App() {
     [say]
   );
 
-  const enc = encode(spec);
   const jsSnippet = `import { play } from "plinkjs";\n\nplay(${JSON.stringify(spec, null, 2)});`;
   const tick = spec.ticks[activeRef.current] ?? spec.ticks[0];
 
@@ -439,15 +438,11 @@ export function App() {
         <div className="shead">
           <span className="idx">03</span>
           <h2>export</h2>
+          <span className="note">copy the code, share a link, or bake a wav</span>
         </div>
-        <div className="explabel">shareable string</div>
-        <pre className="wrap-pre">{enc}</pre>
         <div className="explabel">javascript</div>
-        <pre className="wrap-pre">{jsSnippet}</pre>
+        <pre className="codeblock">{jsSnippet}</pre>
         <div className="exportbtns">
-          <button className="btn" onClick={() => copy(enc, "string copied")}>
-            copy string
-          </button>
           <button className="btn" onClick={() => copy(jsSnippet, "js copied")}>
             copy js
           </button>

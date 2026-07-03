@@ -74,6 +74,8 @@ function renderPresets() {
     b.textContent = name;
     b.onclick = () => {
       spec = structuredClone(presets[name]);
+      box.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
+      b.classList.add("on");
       syncMaster();
       buildTicks();
       refresh();
@@ -160,7 +162,7 @@ function refresh() {
 // Audio
 // ---------------------------------------------------------------------------
 const supported = plink.isSupported();
-if (!supported) $("hint").textContent = "Web Audio not available in this browser";
+if (!supported) $("scopeLabel").textContent = "Web Audio not available";
 
 async function doPlay() {
   if (!supported) return;
@@ -187,16 +189,24 @@ async function drawScope() {
 // ---------------------------------------------------------------------------
 const cv = $<HTMLCanvasElement>("scope");
 const cx = cv.getContext("2d")!;
-const HOT = "#ff8a3d",
-  MAG = "#e0417f",
-  FAINT = "#3a3a46";
+
+// Read the live theme tokens so the scope matches light / dark automatically.
+const css = (name: string) =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#888";
+const palette = () => ({
+  ink: css("--ink"),
+  accent: css("--accent"),
+  grid: css("--grid"),
+  muted: css("--muted"),
+});
 
 function drawWave() {
   const W = cv.width,
     H = cv.height,
     mid = H / 2;
+  const pal = palette();
   cx.clearRect(0, 0, W, H);
-  cx.strokeStyle = FAINT;
+  cx.strokeStyle = pal.grid;
   cx.lineWidth = 1;
   cx.beginPath();
   cx.moveTo(0, mid);
@@ -211,12 +221,9 @@ function drawWave() {
     const a = Math.abs(d[i]);
     if (a > pk) pk = a;
   }
-  const scale = (H * 0.44) / pk;
-  const g = cx.createLinearGradient(0, 0, W, 0);
-  g.addColorStop(0, MAG);
-  g.addColorStop(1, HOT);
-  cx.strokeStyle = g;
-  cx.lineWidth = 2;
+  const scale = (H * 0.42) / pk;
+  cx.strokeStyle = pal.accent;
+  cx.lineWidth = 2.5;
   cx.lineJoin = "round";
   cx.beginPath();
   for (let x = 0; x < W; x++) {
@@ -225,19 +232,20 @@ function drawWave() {
     x ? cx.lineTo(x, y) : cx.moveTo(x, y);
   }
   cx.stroke();
-  cx.fillStyle = "#5f5f70";
-  cx.font = "20px ui-monospace,monospace";
+  cx.fillStyle = pal.muted;
+  cx.font = "18px ui-monospace,monospace";
   for (let ms = 0; ms <= dur * 1000; ms += 10) {
     const x = (ms / 1000 / dur) * W;
-    cx.fillRect(x, mid - 4, 1, 8);
-    if (ms % 20 === 0) cx.fillText(ms + "ms", x + 5, H - 12);
+    cx.fillRect(x, mid - 3, 1, 6);
+    if (ms % 20 === 0) cx.fillText(ms + "ms", x + 5, H - 10);
   }
 }
 
 function drawSpec() {
   const W = cv.width,
     H = cv.height,
-    padB = 38;
+    padB = 34;
+  const pal = palette();
   cx.clearRect(0, 0, W, H);
   if (!lastBuffer) return;
   const d = lastBuffer.getChannelData(0),
@@ -279,39 +287,41 @@ function drawSpec() {
   const xOf = (k: number) => (k / (M - 1)) * W;
   const yOf = (m: number) => {
     const db = 20 * Math.log10(m / mmax + 1e-9);
-    return H - padB - Math.max(0, (db + 70) / 70) * (H - padB - 12);
+    return H - padB - Math.max(0, (db + 70) / 70) * (H - padB - 10);
   };
-  const g = cx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, "rgba(255,138,61,.55)");
-  g.addColorStop(1, "rgba(224,65,127,.04)");
+  // frequency guides
+  cx.strokeStyle = pal.grid;
+  cx.fillStyle = pal.muted;
+  cx.font = "18px ui-monospace,monospace";
+  cx.lineWidth = 1;
+  [500, 1000, 2000, 3100, 5000, 10000].forEach((f) => {
+    const x = xOf((Math.log(f / fmin) / Math.log(fmax / fmin)) * (M - 1));
+    cx.beginPath();
+    cx.moveTo(x, 6);
+    cx.lineTo(x, H - padB);
+    cx.stroke();
+    cx.fillText(f >= 1000 ? f / 1000 + "k" : String(f), x + 5, H - 10);
+  });
+  // curve fill + stroke in the accent
   cx.beginPath();
   cx.moveTo(0, H - padB);
   for (let k = 0; k < M; k++) cx.lineTo(xOf(k), yOf(mags[k]));
   cx.lineTo(W, H - padB);
   cx.closePath();
-  cx.fillStyle = g;
+  cx.save();
+  cx.globalAlpha = 0.12;
+  cx.fillStyle = pal.accent;
   cx.fill();
+  cx.restore();
   cx.beginPath();
   for (let k = 0; k < M; k++) {
     const x = xOf(k),
       y = yOf(mags[k]);
     k ? cx.lineTo(x, y) : cx.moveTo(x, y);
   }
-  cx.strokeStyle = HOT;
-  cx.lineWidth = 2;
+  cx.strokeStyle = pal.accent;
+  cx.lineWidth = 2.5;
   cx.stroke();
-  cx.fillStyle = "#5f5f70";
-  cx.font = "20px ui-monospace,monospace";
-  [500, 1000, 2000, 3100, 5000, 10000].forEach((f) => {
-    const k = (Math.log(f / fmin) / Math.log(fmax / fmin)) * (M - 1),
-      x = xOf(k);
-    cx.strokeStyle = FAINT;
-    cx.beginPath();
-    cx.moveTo(x, 8);
-    cx.lineTo(x, H - padB);
-    cx.stroke();
-    cx.fillText(f >= 1000 ? f / 1000 + "k" : String(f), x + 5, H - 12);
-  });
 }
 
 // ---------------------------------------------------------------------------
@@ -340,9 +350,49 @@ async function copy(text: string, label: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Shuffle — random values across all parameters (and 1..4 ticks) to explore
+// the whole space, then play it.
+// ---------------------------------------------------------------------------
+const rand = (a: number, b: number) => a + Math.random() * (b - a);
+const snap = (v: number, step: number) => Math.round(v / step) * step;
+
+function shuffle() {
+  const weights = [1, 1, 2, 2, 2, 3, 3, 4]; // favour 1–3 ticks, sometimes 4
+  const n = weights[Math.floor(Math.random() * weights.length)];
+  const ticks: Tick[] = [];
+  let at = 0;
+  for (let i = 0; i < n; i++) {
+    // log-random frequency spreads picks evenly across the audible range
+    const freq = Math.exp(rand(Math.log(380), Math.log(5200)));
+    ticks.push({
+      at: snap(at, 0.001),
+      gain: snap(rand(0.35, 0.7), 0.01),
+      freq: snap(freq, 10),
+      q: snap(rand(2, 14), 0.5),
+      decay: snap(rand(0.0015, 0.02), 0.0005),
+      noise: snap(rand(0, 1), 0.01),
+      tail: snap(rand(0.1, 1), 0.01),
+      bright: snap(rand(0, 1), 0.01),
+    });
+    at += rand(0.02, 0.09);
+  }
+  spec = { volume: snap(rand(0.7, 1), 0.01), ticks };
+  clearPresetHighlight();
+  syncMaster();
+  buildTicks();
+  refresh();
+  doPlay();
+}
+
+function clearPresetHighlight() {
+  document.querySelectorAll<HTMLElement>("#presets button").forEach((b) => b.classList.remove("on"));
+}
+
+// ---------------------------------------------------------------------------
 // Wiring
 // ---------------------------------------------------------------------------
 $("play").onclick = doPlay;
+$("shuffle").onclick = shuffle;
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space" && !(e.target instanceof HTMLInputElement)) {
     e.preventDefault();

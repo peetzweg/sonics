@@ -8,6 +8,7 @@
       name="description"
       content="Tiny, dependency-free UI sounds synthesised in the browser with the Web Audio API. Design one in the playground, export the spec, drop it in."
     />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8A%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./src/style.css" />
   </head>
@@ -22,31 +23,34 @@
         </p>
         <div class="install">
           <code>npm i plinkjs</code>
-          <button class="copy" data-copy="npm i plinkjs" aria-label="Copy install command">copy</button>
+          <button class="mini" data-copy="npm i plinkjs" aria-label="Copy install command">copy</button>
         </div>
       </header>
 
-      <div class="card stage-card">
-        <div class="stage">
+      <!-- sticky instrument: stays pinned so the waveform is always in view -->
+      <div class="instrument" id="instrument">
+        <div class="play-col">
           <button class="disc" id="play" aria-label="Play sound">
-            <span class="ring"></span><span class="lab">PLAY</span>
+            <span class="ring"></span><span class="lab">play</span>
           </button>
-          <p class="hint" id="hint">press · or hit the spacebar</p>
+          <button class="btn shuffle" id="shuffle" aria-label="Shuffle parameters">shuffle</button>
         </div>
-        <div class="scope-head">
-          <span id="scopeLabel">Waveform</span>
-          <div class="tabs" role="group" aria-label="Visualisation">
-            <button id="tabWave" aria-pressed="true">Waveform</button>
-            <button id="tabSpec" aria-pressed="false">Spectrum</button>
+        <div class="scope-col">
+          <div class="scope-head">
+            <span id="scopeLabel">Waveform</span>
+            <div class="tabs" role="group" aria-label="Visualisation">
+              <button id="tabWave" aria-pressed="true">Wave</button>
+              <button id="tabSpec" aria-pressed="false">Spectrum</button>
+            </div>
           </div>
+          <canvas id="scope" width="1720" height="360" aria-hidden="true"></canvas>
         </div>
-        <canvas id="scope" width="1720" height="420" aria-hidden="true"></canvas>
       </div>
 
       <section>
         <div class="row">
           <h2>Presets</h2>
-          <span class="muted">click one to load &amp; hear it</span>
+          <span class="muted">tap one to load &amp; hear it</span>
         </div>
         <div class="presets" id="presets"></div>
       </section>
@@ -72,7 +76,7 @@
         <pre id="enc"></pre>
         <div class="explabel">JavaScript</div>
         <pre id="js"></pre>
-        <div class="row exportbtns">
+        <div class="exportbtns">
           <button class="btn" id="copyEnc">copy string</button>
           <button class="btn" id="copyJs">copy JS</button>
           <button class="btn" id="permalink">copy permalink</button>
@@ -122,9 +126,7 @@ function Save() {
         </p>
       </section>
 
-      <footer>
-        plink · zero-dependency Web Audio UI sounds · MIT · press PLAY, drag sliders, export
-      </footer>
+      <footer>plink · zero-dependency Web Audio UI sounds · MIT</footer>
     </main>
 
     <script type="module" src="./src/main.ts"></script>

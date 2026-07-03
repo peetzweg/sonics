@@ -3,44 +3,58 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>plink · UI sounds you can feel</title>
+    <title>plink · ui sound synthesiser</title>
     <meta
       name="description"
       content="Tiny, dependency-free UI sounds synthesised in the browser with the Web Audio API. Design one in the playground, export the spec, drop it in."
     />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#f5f5f5" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8A%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
-    <main class="wrap">
-      <header class="hero">
-        <p class="brand">plink</p>
-        <h1>UI sounds you can <span>feel</span>.</h1>
-        <p class="tagline">
-          Tasteful microinteraction sounds, synthesised live in the browser — no audio files, no
-          dependencies, ~3&nbsp;KB. Design one below, export it, drop it in.
-        </p>
-        <div class="install">
-          <code>npm i plinkjs</code>
-          <button class="mini" data-copy="npm i plinkjs" aria-label="Copy install command">copy</button>
-        </div>
+    <main class="sheet">
+      <header class="topbar">
+        <span class="wordmark">plink<sup>®</sup></span>
+        <span class="model">web audio ui sound synthesiser</span>
+        <span class="spacer"></span>
+        <span class="ver">js–01 · mit</span>
       </header>
 
-      <!-- sticky instrument: stays pinned so the waveform is always in view -->
+      <div class="hero">
+        <h1>ui sounds you can <b>feel</b></h1>
+        <p class="lead">
+          tasteful microinteraction sounds, synthesised live in the browser — no audio files, no
+          dependencies. design one below, export the spec, drop it in.
+        </p>
+      </div>
+
+      <div class="specs">
+        <div><span class="k">type</span><span class="v">synthesised</span></div>
+        <div><span class="k">dependencies</span><span class="v">0</span></div>
+        <div><span class="k">size</span><span class="v">~3&nbsp;kb</span></div>
+        <div>
+          <span class="k">install</span>
+          <span class="v">npm i plinkjs
+            <button class="mini" data-copy="npm i plinkjs" aria-label="Copy install command">copy</button>
+          </span>
+        </div>
+      </div>
+
+      <!-- sticky instrument: waveform stays in view while editing -->
       <div class="instrument" id="instrument">
         <div class="play-col">
-          <button class="disc" id="play" aria-label="Play sound">
-            <span class="ring"></span><span class="lab">play</span>
+          <button class="knob" id="play" aria-label="Play sound">
+            <span class="ring"></span>play
           </button>
-          <button class="btn shuffle" id="shuffle" aria-label="Shuffle parameters">shuffle</button>
+          <button class="btn key" id="shuffle" aria-label="Shuffle parameters">shuffle</button>
         </div>
         <div class="scope-col">
           <div class="scope-head">
-            <span id="scopeLabel">Waveform</span>
+            <span class="lcd-label" id="scopeLabel">waveform</span>
             <div class="tabs" role="group" aria-label="Visualisation">
-              <button id="tabWave" aria-pressed="true">Wave</button>
-              <button id="tabSpec" aria-pressed="false">Spectrum</button>
+              <button id="tabWave" aria-pressed="true">wave</button>
+              <button id="tabSpec" aria-pressed="false">spectrum</button>
             </div>
           </div>
           <canvas id="scope" width="1720" height="360" aria-hidden="true"></canvas>
@@ -48,56 +62,68 @@
       </div>
 
       <section>
-        <div class="row">
-          <h2>Presets</h2>
-          <span class="muted">tap one to load &amp; hear it</span>
+        <div class="shead">
+          <span class="idx">01</span>
+          <h2>presets</h2>
+          <span class="note">tap to load &amp; hear</span>
         </div>
         <div class="presets" id="presets"></div>
       </section>
+      <hr class="rule" />
 
       <section>
-        <div class="row">
-          <h2>Master</h2>
+        <div class="shead">
+          <span class="idx">02</span>
+          <h2>master</h2>
+        </div>
+        <div class="masterrow">
           <div class="ctl master">
-            <label>Volume <b><span id="volVal">0.90</span></b></label>
+            <label>volume <b><span id="volVal">0.90</span></b></label>
             <input type="range" id="vol" min="0" max="1.2" step="0.01" value="0.9" />
           </div>
         </div>
-        <div class="row">
-          <h2>Ticks <span class="muted" id="tickCount"></span></h2>
-          <button class="btn" id="addTick">+ add tick</button>
+      </section>
+      <hr class="rule" />
+
+      <section>
+        <div class="shead">
+          <span class="idx">03</span>
+          <h2>ticks <span id="tickCount"></span></h2>
+          <button class="btn key" id="addTick" style="margin-left:auto">+ add tick</button>
         </div>
         <div class="ticks" id="ticks"></div>
       </section>
+      <hr class="rule" />
 
       <section class="export">
-        <div class="row"><h2>Export</h2></div>
-        <div class="explabel">Shareable string</div>
+        <div class="shead"><span class="idx">04</span><h2>export</h2></div>
+        <div class="explabel">shareable string</div>
         <pre id="enc"></pre>
-        <div class="explabel">JavaScript</div>
+        <div class="explabel">javascript</div>
         <pre id="js"></pre>
         <div class="exportbtns">
           <button class="btn" id="copyEnc">copy string</button>
-          <button class="btn" id="copyJs">copy JS</button>
+          <button class="btn" id="copyJs">copy js</button>
           <button class="btn" id="permalink">copy permalink</button>
-          <button class="btn solid" id="wav">download WAV</button>
+          <button class="btn solid" id="wav">download wav</button>
         </div>
       </section>
+      <hr class="rule" />
 
       <section class="usage">
-        <div class="row"><h2>Drop it in</h2></div>
+        <div class="shead"><span class="idx">05</span><h2>drop it in</h2></div>
         <div class="cols">
           <div>
-            <div class="explabel">Vanilla</div>
-            <pre class="code">import plink, { armAutoUnlock } from "plinkjs";
+            <div class="explabel">vanilla</div>
+            <pre>import plink, { armAutoUnlock } from "plinkjs";
 
 armAutoUnlock();
 document.querySelector("button")
   .addEventListener("click", () =&gt; plink("click"));</pre>
           </div>
           <div>
-            <div class="explabel">React</div>
-            <pre class="code">import { useSound } from "plinkjs/react";
+            <div class="explabel">react</div>
+            <pre>import { useSound } from "plinkjs/react";
 
 function Save() {
   const click = useSound("click");
@@ -106,27 +132,31 @@ function Save() {
           </div>
         </div>
       </section>
+      <hr class="rule" />
 
       <section class="credits">
-        <div class="row"><h2>Standing on shoulders</h2></div>
+        <div class="shead"><span class="idx">06</span><h2>standing on shoulders</h2></div>
         <p>
-          Everyone who <em>synthesises</em> sound in the browser aimed at retro game SFX; everyone
-          aiming at tasteful UI shipped audio <em>files</em>. plink sits in the empty cell — tiny,
-          synth-based, tasteful, with a designer. Direct inspirations:
-          <a href="https://github.com/KilledByAPixel/ZzFX">ZzFX</a> (Frank Force) for the sub-1&nbsp;KB
+          everyone who <em>synthesises</em> sound in the browser aimed at retro game sfx; everyone
+          aiming at tasteful ui shipped audio <em>files</em>. plink sits in the empty cell — tiny,
+          synth-based, tasteful, with a designer. inspirations:
+          <a href="https://github.com/KilledByAPixel/ZzFX">zzfx</a> (frank force) for the sub-1&nbsp;kb
           synth + designer pattern, and
-          <a href="https://haptics.lochie.me/">web-haptics</a> (Lochie Axon) for the sibling-modality
-          design→export loop this mirrors. Also
+          <a href="https://haptics.lochie.me/">web-haptics</a> (lochie axon) for the sibling-modality
+          design→export loop this mirrors. also
           <a href="https://www.drpetter.se/project_sfxr.html">sfxr</a>,
           <a href="https://github.com/chr15m/jsfxr">jsfxr</a>,
           <a href="https://jfxr.frozenfractal.com/">jfxr</a>,
           <a href="https://snd.dev/">snd-lib</a>, and
-          <a href="https://github.com/joshwcomeau/use-sound">use-sound</a>. The default
-          <code>click</code> was reverse-engineered from the ElevenLabs onboarding sound.
+          <a href="https://github.com/joshwcomeau/use-sound">use-sound</a>. the default
+          <code>click</code> was reverse-engineered from the elevenlabs onboarding sound.
         </p>
       </section>
 
-      <footer>plink · zero-dependency Web Audio UI sounds · MIT</footer>
+      <footer>
+        <span>plink — web audio ui sound synthesiser</span>
+        <span>zero dependencies · mit</span>
+      </footer>
     </main>
 
     <script type="module" src="./src/main.ts"></script>

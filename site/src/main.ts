@@ -162,7 +162,7 @@ function refresh() {
 // Audio
 // ---------------------------------------------------------------------------
 const supported = plink.isSupported();
-if (!supported) $("scopeLabel").textContent = "Web Audio not available";
+if (!supported) $("scopeLabel").textContent = "web audio not available";
 
 async function doPlay() {
   if (!supported) return;
@@ -190,14 +190,12 @@ async function drawScope() {
 const cv = $<HTMLCanvasElement>("scope");
 const cx = cv.getContext("2d")!;
 
-// Read the live theme tokens so the scope matches light / dark automatically.
-const css = (name: string) =>
-  getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#888";
+// The scope is a fixed dark LCD panel, so its colours don't follow the page.
 const palette = () => ({
-  ink: css("--ink"),
-  accent: css("--accent"),
-  grid: css("--grid"),
-  muted: css("--muted"),
+  ink: "#f5f5f5",
+  accent: "#f05a24", // TE orange trace
+  grid: "#2b2b31",
+  muted: "#8a8a92",
 });
 
 function drawWave() {
@@ -416,7 +414,7 @@ function setMode(m: "wave" | "spec") {
   mode = m;
   $("tabWave").setAttribute("aria-pressed", String(m === "wave"));
   $("tabSpec").setAttribute("aria-pressed", String(m === "spec"));
-  $("scopeLabel").textContent = m === "wave" ? "Waveform" : "Spectrum · log frequency (dB)";
+  $("scopeLabel").textContent = m === "wave" ? "waveform" : "spectrum · db";
   drawScope();
 }
 

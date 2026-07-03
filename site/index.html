@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>plink · UI sounds you can feel</title>
+    <meta
+      name="description"
+      content="Tiny, dependency-free UI sounds synthesised in the browser with the Web Audio API. Design one in the playground, export the spec, drop it in."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8A%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hero">
+        <p class="brand">plink</p>
+        <h1>UI sounds you can <span>feel</span>.</h1>
+        <p class="tagline">
+          Tasteful microinteraction sounds, synthesised live in the browser — no audio files, no
+          dependencies, ~3&nbsp;KB. Design one below, export it, drop it in.
+        </p>
+        <div class="install">
+          <code>npm i plinkjs</code>
+          <button class="copy" data-copy="npm i plinkjs" aria-label="Copy install command">copy</button>
+        </div>
+      </header>
+
+      <div class="card stage-card">
+        <div class="stage">
+          <button class="disc" id="play" aria-label="Play sound">
+            <span class="ring"></span><span class="lab">PLAY</span>
+          </button>
+          <p class="hint" id="hint">press · or hit the spacebar</p>
+        </div>
+        <div class="scope-head">
+          <span id="scopeLabel">Waveform</span>
+          <div class="tabs" role="group" aria-label="Visualisation">
+            <button id="tabWave" aria-pressed="true">Waveform</button>
+            <button id="tabSpec" aria-pressed="false">Spectrum</button>
+          </div>
+        </div>
+        <canvas id="scope" width="1720" height="420" aria-hidden="true"></canvas>
+      </div>
+
+      <section>
+        <div class="row">
+          <h2>Presets</h2>
+          <span class="muted">click one to load &amp; hear it</span>
+        </div>
+        <div class="presets" id="presets"></div>
+      </section>
+
+      <section>
+        <div class="row">
+          <h2>Master</h2>
+          <div class="ctl master">
+            <label>Volume <b><span id="volVal">0.90</span></b></label>
+            <input type="range" id="vol" min="0" max="1.2" step="0.01" value="0.9" />
+          </div>
+        </div>
+        <div class="row">
+          <h2>Ticks <span class="muted" id="tickCount"></span></h2>
+          <button class="btn" id="addTick">+ add tick</button>
+        </div>
+        <div class="ticks" id="ticks"></div>
+      </section>
+
+      <section class="export">
+        <div class="row"><h2>Export</h2></div>
+        <div class="explabel">Shareable string</div>
+        <pre id="enc"></pre>
+        <div class="explabel">JavaScript</div>
+        <pre id="js"></pre>
+        <div class="row exportbtns">
+          <button class="btn" id="copyEnc">copy string</button>
+          <button class="btn" id="copyJs">copy JS</button>
+          <button class="btn" id="permalink">copy permalink</button>
+          <button class="btn solid" id="wav">download WAV</button>
+        </div>
+      </section>
+
+      <section class="usage">
+        <div class="row"><h2>Drop it in</h2></div>
+        <div class="cols">
+          <div>
+            <div class="explabel">Vanilla</div>
+            <pre class="code">import plink, { armAutoUnlock } from "plinkjs";
+
+armAutoUnlock();
+document.querySelector("button")
+  .addEventListener("click", () =&gt; plink("click"));</pre>
+          </div>
+          <div>
+            <div class="explabel">React</div>
+            <pre class="code">import { useSound } from "plinkjs/react";
+
+function Save() {
+  const click = useSound("click");
+  return &lt;button onClick={click}&gt;Save&lt;/button&gt;;
+}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="credits">
+        <div class="row"><h2>Standing on shoulders</h2></div>
+        <p>
+          Everyone who <em>synthesises</em> sound in the browser aimed at retro game SFX; everyone
+          aiming at tasteful UI shipped audio <em>files</em>. plink sits in the empty cell — tiny,
+          synth-based, tasteful, with a designer. Direct inspirations:
+          <a href="https://github.com/KilledByAPixel/ZzFX">ZzFX</a> (Frank Force) for the sub-1&nbsp;KB
+          synth + designer pattern, and
+          <a href="https://haptics.lochie.me/">web-haptics</a> (Lochie Axon) for the sibling-modality
+          design→export loop this mirrors. Also
+          <a href="https://www.drpetter.se/project_sfxr.html">sfxr</a>,
+          <a href="https://github.com/chr15m/jsfxr">jsfxr</a>,
+          <a href="https://jfxr.frozenfractal.com/">jfxr</a>,
+          <a href="https://snd.dev/">snd-lib</a>, and
+          <a href="https://github.com/joshwcomeau/use-sound">use-sound</a>. The default
+          <code>click</code> was reverse-engineered from the ElevenLabs onboarding sound.
+        </p>
+      </section>
+
+      <footer>
+        plink · zero-dependency Web Audio UI sounds · MIT · press PLAY, drag sliders, export
+      </footer>
+    </main>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

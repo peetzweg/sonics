@@ -394,10 +394,21 @@ function clearPresetHighlight() {
 $("play").onclick = doPlay;
 $("shuffle").onclick = shuffle;
 window.addEventListener("keydown", (e) => {
-  if (e.code === "Space" && !(e.target instanceof HTMLInputElement)) {
-    e.preventDefault();
-    doPlay();
-  }
+  if (e.key !== " " && e.code !== "Space") return;
+  const t = e.target as HTMLElement | null;
+  // Let focused buttons / links handle Space themselves (they activate and
+  // never scroll), and let real text fields receive the space character.
+  const tag = t?.tagName;
+  if (tag === "BUTTON" || tag === "A") return;
+  const isTextField =
+    tag === "TEXTAREA" ||
+    t?.isContentEditable === true ||
+    (tag === "INPUT" &&
+      /^(text|search|email|url|tel|password|number)$/i.test((t as HTMLInputElement).type));
+  if (isTextField) return;
+  // Everything else (body, a focused range slider, etc.): play, don't scroll.
+  e.preventDefault();
+  doPlay();
 });
 $("tabWave").onclick = () => setMode("wave");
 $("tabSpec").onclick = () => setMode("spec");

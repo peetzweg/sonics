@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "noEmit": true,
     "paths": {
       "plinkjs": ["../packages/plink/src/index.ts"],

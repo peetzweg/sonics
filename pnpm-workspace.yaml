@@ -1,0 +1,8 @@
+packages:
+  - "packages/**"
+  - "site"
+  - "apps/**"
+
+# esbuild ships a native binary via a postinstall script; tsup and Vite need it.
+allowBuilds:
+  esbuild: true

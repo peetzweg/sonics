@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "paths": {
+      "plinkjs": ["../../packages/plink/src/index.ts"],
+      "plinkjs/react": ["../../packages/plink/src/react/index.tsx"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

@@ -1,0 +1,58 @@
+{
+  "name": "plinkjs",
+  "version": "0.1.0",
+  "description": "Tiny, dependency-free UI sounds you can feel. Synthesised in the browser with the Web Audio API — no audio files.",
+  "author": "Philip Poloczek",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.mjs",
+      "require": "./dist/react/index.js"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "web-audio",
+    "sound",
+    "ui",
+    "microinteraction",
+    "click",
+    "sound-effects",
+    "synthesis",
+    "haptics",
+    "react",
+    "zero-dependency"
+  ],
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "react": "^18.3.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0"
+  }
+}

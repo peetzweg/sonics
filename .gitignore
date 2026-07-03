@@ -1,0 +1,22 @@
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# build output
+**/dist/
+site/dist/
+apps/**/dist/
+
+# editor / os
+.DS_Store
+.vscode/
+.idea/
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# local-only north-star note (see message history) — keep out of git for now
+VISION.md

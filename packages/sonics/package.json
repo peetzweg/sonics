@@ -1,6 +1,6 @@
 {
   "name": "sonics",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Tiny, dependency-free UI sounds you can feel. Synthesised in the browser with the Web Audio API — no audio files.",
   "author": "Philip Poloczek",
   "license": "MIT",
@@ -20,7 +20,9 @@
       "require": "./dist/react/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -54,5 +56,12 @@
     "react": "^18.3.0",
     "tsup": "^8.3.0",
     "typescript": "^5.6.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peetzweg/sonics.git",
+    "directory": "packages/sonics"
+  },
+  "homepage": "https://peetzweg.github.io/sonics/",
+  "bugs": "https://github.com/peetzweg/sonics/issues"
 }

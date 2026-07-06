@@ -1,4 +1,4 @@
-import plink, { play, presets, armAutoUnlock, type Sound } from "plinkjs";
+import sonics, { play, presets, armAutoUnlock, type Sound } from "sonics";
 
 armAutoUnlock();
 
@@ -6,7 +6,7 @@ const box = document.getElementById("presets")!;
 (Object.keys(presets) as Array<keyof typeof presets>).forEach((name) => {
   const b = document.createElement("button");
   b.textContent = name;
-  b.onclick = () => plink(name);
+  b.onclick = () => sonics(name);
   box.appendChild(b);
 });
 

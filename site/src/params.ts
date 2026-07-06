@@ -1,4 +1,4 @@
-import type { Sound, Tick } from "plinkjs";
+import type { Sound, Tick } from "sonics";
 
 export type Param = {
   key: keyof Tick;

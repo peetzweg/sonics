@@ -1,5 +1,5 @@
-import { PlinkProvider, useSound, usePlink, PlinkButton } from "plinkjs/react";
-import { presets } from "plinkjs";
+import { SonicsProvider, useSound, useSonics, SonicsButton } from "sonics/react";
+import { presets } from "sonics";
 
 const wrap: React.CSSProperties = {
   fontFamily: "system-ui, sans-serif",
@@ -20,12 +20,12 @@ const btn: React.CSSProperties = {
 };
 
 function Demo() {
-  const { enabled, toggle, volume, setVolume } = usePlink();
+  const { enabled, toggle, volume, setVolume } = useSonics();
   const save = useSound("click");
 
   return (
     <div style={wrap}>
-      <h1 style={{ fontWeight: 640 }}>plink · React</h1>
+      <h1 style={{ fontWeight: 640 }}>sonics · React</h1>
       <p style={{ color: "#9a9aab" }}>
         Every button below plays a synthesised sound. No audio files. Toggle sound off to see the
         provider mute everything.
@@ -53,27 +53,27 @@ function Demo() {
         Save (click)
       </button>
 
-      <h3 style={{ marginTop: 28 }}>PlinkButton, one per preset</h3>
+      <h3 style={{ marginTop: 28 }}>SonicsButton, one per preset</h3>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {(Object.keys(presets) as Array<keyof typeof presets>).map((name) => (
-          <PlinkButton key={name} sound={name} style={btn}>
+          <SonicsButton key={name} sound={name} style={btn}>
             {name}
-          </PlinkButton>
+          </SonicsButton>
         ))}
       </div>
 
       <h3 style={{ marginTop: 28 }}>Play on hover</h3>
-      <PlinkButton sound="tick" on="hover" style={btn}>
+      <SonicsButton sound="tick" on="hover" style={btn}>
         hover me
-      </PlinkButton>
+      </SonicsButton>
     </div>
   );
 }
 
 export default function App() {
   return (
-    <PlinkProvider>
+    <SonicsProvider>
       <Demo />
-    </PlinkProvider>
+    </SonicsProvider>
   );
 }

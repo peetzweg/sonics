@@ -4,8 +4,8 @@
     "jsx": "react-jsx",
     "noEmit": true,
     "paths": {
-      "plinkjs": ["../../packages/plink/src/index.ts"],
-      "plinkjs/react": ["../../packages/plink/src/react/index.tsx"]
+      "sonics": ["../../packages/sonics/src/index.ts"],
+      "sonics/react": ["../../packages/sonics/src/react/index.tsx"]
     }
   },
   "include": ["src", "vite.config.ts"]

@@ -20,15 +20,15 @@ importers:
 
   apps/react-example:
     dependencies:
-      plinkjs:
-        specifier: workspace:*
-        version: link:../../packages/plink
       react:
         specifier: ^18.3.0
         version: 18.3.1
       react-dom:
         specifier: ^18.3.0
         version: 18.3.1(react@18.3.1)
+      sonics:
+        specifier: workspace:*
+        version: link:../../packages/sonics
     devDependencies:
       '@types/node':
         specifier: ^22.10.0
@@ -51,9 +51,9 @@ importers:
 
   apps/vanilla-example:
     dependencies:
-      plinkjs:
+      sonics:
         specifier: workspace:*
-        version: link:../../packages/plink
+        version: link:../../packages/sonics
     devDependencies:
       '@types/node':
         specifier: ^22.10.0
@@ -65,7 +65,7 @@ importers:
         specifier: ^5.4.0
         version: 5.4.21(@types/node@22.20.0)
 
-  packages/plink:
+  packages/sonics:
     devDependencies:
       '@types/react':
         specifier: ^18.3.0
@@ -80,20 +80,38 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
+  packages/web-sfx:
+    dependencies:
+      react:
+        specifier: '>=16.8.0'
+        version: 18.3.1
+      sonics:
+        specifier: workspace:*
+        version: link:../sonics
+
+  packages/web-sonics:
+    dependencies:
+      react:
+        specifier: '>=16.8.0'
+        version: 18.3.1
+      sonics:
+        specifier: workspace:*
+        version: link:../sonics
+
   site:
     dependencies:
       motion:
         specifier: ^11.11.17
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      plinkjs:
-        specifier: workspace:*
-        version: link:../packages/plink
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      sonics:
+        specifier: workspace:*
+        version: link:../packages/sonics
     devDependencies:
       '@types/node':
         specifier: ^22.10.0

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import plink, { play, presets, encode, decode, armAutoUnlock, type Sound } from "plinkjs";
+import sonics, { play, presets, encode, decode, armAutoUnlock, type Sound } from "sonics";
 import { Knob } from "./components/Knob.js";
 import { Fader } from "./components/Fader.js";
 import { Scope } from "./components/Scope.js";
@@ -46,7 +46,7 @@ export function App() {
   }));
 
   const alt = altHeld || altLatch;
-  const supported = plink.isSupported();
+  const supported = sonics.isSupported();
 
   const specRef = useRef(spec);
   specRef.current = spec;
@@ -221,15 +221,15 @@ export function App() {
     [say]
   );
 
-  const jsSnippet = `import { play } from "plinkjs";\n\nplay(${JSON.stringify(spec, null, 2)});`;
+  const jsSnippet = `import { play } from "sonics";\n\nplay(${JSON.stringify(spec, null, 2)});`;
   const tick = spec.ticks[activeRef.current] ?? spec.ticks[0];
 
   const downloadWav = useCallback(async () => {
-    const blob = await plink.toWav(specRef.current);
+    const blob = await sonics.toWav(specRef.current);
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "plink.wav";
+    a.download = "sonics.wav";
     a.click();
     URL.revokeObjectURL(url);
     say("wav downloaded");
@@ -248,7 +248,7 @@ export function App() {
     <main className="sheet">
       <header className="topbar">
         <span className="wordmark">
-          plink<sup>®</sup>
+          sonics<sup>®</sup>
         </span>
         <span className="model">web audio ui sound synthesiser</span>
         <span className="spacer" />
@@ -290,8 +290,8 @@ export function App() {
         <div>
           <span className="k">install</span>
           <span className="v">
-            npm i plinkjs
-            <button className="mini" onClick={() => copy("npm i plinkjs", "copied")}>
+            npm i sonics
+            <button className="mini" onClick={() => copy("npm i sonics", "copied")}>
               copy
             </button>
           </span>
@@ -464,15 +464,15 @@ export function App() {
         <div className="cols">
           <div>
             <div className="explabel">vanilla</div>
-            <pre>{`import plink, { armAutoUnlock } from "plinkjs";
+            <pre>{`import sonics, { armAutoUnlock } from "sonics";
 
 armAutoUnlock();
 document.querySelector("button")
-  .addEventListener("click", () => plink("click"));`}</pre>
+  .addEventListener("click", () => sonics("click"));`}</pre>
           </div>
           <div>
             <div className="explabel">react</div>
-            <pre>{`import { useSound } from "plinkjs/react";
+            <pre>{`import { useSound } from "sonics/react";
 
 function Save() {
   const click = useSound("click");
@@ -490,7 +490,7 @@ function Save() {
         </div>
         <p>
           everyone who <em>synthesises</em> sound in the browser aimed at retro game sfx; everyone
-          aiming at tasteful ui shipped audio <em>files</em>. plink sits in the empty cell — tiny,
+          aiming at tasteful ui shipped audio <em>files</em>. sonics sits in the empty cell — tiny,
           synth-based, tasteful, with a designer. inspirations:{" "}
           <a href="https://github.com/KilledByAPixel/ZzFX">zzfx</a> (frank force) for the sub-1&nbsp;kb
           synth + designer pattern, and <a href="https://haptics.lochie.me/">web-haptics</a> (lochie
@@ -535,7 +535,7 @@ function Save() {
       </motion.section>
 
       <footer>
-        <span>plink — web audio ui sound synthesiser</span>
+        <span>sonics — web audio ui sound synthesiser</span>
         <span>zero dependencies · mit</span>
       </footer>
 

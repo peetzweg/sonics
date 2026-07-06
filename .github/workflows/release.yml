@@ -1,0 +1,51 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write # let changesets open the version PR + push tags
+  pull-requests: write
+  id-token: write # npm OIDC trusted publishing + provenance
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: install pnpm
+        uses: pnpm/action-setup@v4 # version from the "packageManager" field
+
+      - name: install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: install deps
+        run: pnpm install --frozen-lockfile
+
+      # npm >= 11.5 is required for OIDC trusted publishing
+      - name: ensure recent npm
+        run: npm install -g npm@latest
+
+      - name: create release PR or publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm run version
+          publish: pnpm run release
+          commit: "chore: version packages"
+          title: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"

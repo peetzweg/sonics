@@ -1,18 +1,20 @@
 {
-  "name": "plink-monorepo",
+  "name": "sonics-monorepo",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.3.0",
   "scripts": {
-    "build": "pnpm --filter=plinkjs build",
-    "watch": "pnpm --filter=plinkjs dev",
-    "dev": "pnpm --filter=plinkjs build && pnpm --filter=site dev",
+    "build": "pnpm --filter=sonics build",
+    "watch": "pnpm --filter=sonics dev",
+    "dev": "pnpm --filter=sonics build && pnpm --filter=site dev",
     "site:dev": "pnpm --filter=site dev",
     "site:build": "pnpm run build && pnpm --filter=site build",
     "example:react": "pnpm --filter=react-example dev",
     "example:vanilla": "pnpm --filter=vanilla-example dev",
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,css,html,md}\"",
+    "changeset": "changeset",
+    "version": "changeset version",
     "release": "pnpm build && changeset publish"
   },
   "devDependencies": {

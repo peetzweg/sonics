@@ -1,28 +1,28 @@
-# plink 🔊
+# sonics 🔊
 
 **Tiny, dependency-free UI sounds you can feel.** Synthesised live in the browser with the Web Audio API — no audio files, no network payload, ~3 KB.
 
-plink is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object — so you can design one in the playground, copy the spec, and drop it in anywhere.
+sonics is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object — so you can design one in the playground, copy the spec, and drop it in anywhere.
 
 ```js
-import plink from "plinkjs";
-plink("click"); // that's it
+import sonics from "sonics";
+sonics("click"); // that's it
 ```
 
-> **Note on the npm name:** the word `plink` was already taken on npm (an unrelated p2p library), so the package publishes as **`plinkjs`**. The project, repo and brand stay **plink**. If you'd rather keep the exact word, publish it scoped — `@yourname/plink` — and update `packages/plink/package.json`.
+> **Note on the npm name:** the library publishes as **`sonics`**. Two thin alias packages — **`web-sonics`** and **`web-sfx`** — re-export it, so `npm i sonics`, `npm i web-sonics`, and `npm i web-sfx` all work; they hold the sibling names (à la [`web-haptics`](https://github.com/lochie/web-haptics)) while `sonics` stays canonical.
 
 ## The story
 
 The ElevenLabs onboarding has a genuinely lovely click. It turns out to be a lazy-loaded `click.mp3` — a _recording_. We measured it: two damped resonant "ticks" ~27 ms apart, both near 3.1 kHz, decaying in ~3 ms. That's the acoustic signature of a small mechanical switch — press, then release.
 
-Once you can describe a sound in a handful of numbers, you don't need the file. plink synthesises it live: a short noise burst (the strike) excites a band-pass filter (the resonant body), which rings and decays. Stack two ticks and you get the tactile press-release. The default `click` preset _is_ that ElevenLabs sound, rebuilt from ~30 lines of Web Audio.
+Once you can describe a sound in a handful of numbers, you don't need the file. sonics synthesises it live: a short noise burst (the strike) excites a band-pass filter (the resonant body), which rings and decays. Stack two ticks and you get the tactile press-release. The default `click` preset _is_ that ElevenLabs sound, rebuilt from ~30 lines of Web Audio.
 
 ## This repo
 
 A pnpm monorepo (structure inspired by [web-haptics](https://github.com/lochie/web-haptics)):
 
 ```
-packages/plink   → the library (published as "plinkjs"): core + /react, built with tsup
+packages/sonics   → the library (published as "sonics"): core + /react, built with tsup
 site             → the playground: design a sound, hear it, export it
 apps/react-example
 apps/vanilla-example
@@ -32,13 +32,13 @@ apps/vanilla-example
 
 ```sh
 pnpm install
-pnpm build          # build the library (tsup → packages/plink/dist)
+pnpm build          # build the library (tsup → packages/sonics/dist)
 pnpm site:dev       # open the playground (Vite; imports the lib source directly)
 pnpm example:react  # run the React example
 pnpm example:vanilla
 ```
 
-The `site` and examples alias `plinkjs` to the library **source**, so you can hack on the library and the playground together with no rebuild.
+The `site` and examples alias `sonics` to the library **source**, so you can hack on the library and the playground together with no rebuild.
 
 ## The playground
 
@@ -46,11 +46,11 @@ The `site` and examples alias `plinkjs` to the library **source**, so you can ha
 
 ## Library docs
 
-See [`packages/plink/README.md`](./packages/plink/README.md) for the full API (presets, the tick spec, `encode`/`decode`, `toWav`, and the React bindings).
+See [`packages/sonics/README.md`](./packages/sonics/README.md) for the full API (presets, the tick spec, `encode`/`decode`, `toWav`, and the React bindings).
 
 ## Credit
 
-plink occupies a specific empty cell: **synth-based** (not file playback), **tasteful UI** (not retro game SFX), tiny/zero-dep, with a designer. It stands on the shoulders of:
+sonics occupies a specific empty cell: **synth-based** (not file playback), **tasteful UI** (not retro game SFX), tiny/zero-dep, with a designer. It stands on the shoulders of:
 
 - **[ZzFX](https://github.com/KilledByAPixel/ZzFX)** — Frank Force. The sub-1 KB synth + designer + code-export pattern. (Aimed at retro game SFX.)
 - **[web-haptics](https://github.com/lochie/web-haptics)** / **[haptics.lochie.me](https://haptics.lochie.me/)** — Lochie Axon. The sibling-modality library and the design→export loop this mirrors.

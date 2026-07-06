@@ -80,24 +80,6 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
-  packages/web-sfx:
-    dependencies:
-      react:
-        specifier: '>=16.8.0'
-        version: 18.3.1
-      sonics:
-        specifier: workspace:*
-        version: link:../sonics
-
-  packages/web-sonics:
-    dependencies:
-      react:
-        specifier: '>=16.8.0'
-        version: 18.3.1
-      sonics:
-        specifier: workspace:*
-        version: link:../sonics
-
   site:
     dependencies:
       motion:

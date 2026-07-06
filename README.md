@@ -9,7 +9,7 @@ import sonics from "sonics";
 sonics("click"); // that's it
 ```
 
-> **Note on the npm name:** the library publishes as **`sonics`**. Two thin alias packages — **`web-sonics`** and **`web-sfx`** — re-export it, so `npm i sonics`, `npm i web-sonics`, and `npm i web-sfx` all work; they hold the sibling names (à la [`web-haptics`](https://github.com/lochie/web-haptics)) while `sonics` stays canonical.
+> The audio sibling of [`web-haptics`](https://github.com/lochie/web-haptics): haptic feedback ↔ sonic feedback for the web.
 
 ## The story
 

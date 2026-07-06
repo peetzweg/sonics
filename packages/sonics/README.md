@@ -1,32 +1,32 @@
-# plinkjs
+# sonics
 
 **Tiny, dependency-free UI sounds you can feel.** Synthesised in the browser with the Web Audio API — no audio files, no network payload, ~3 KB.
 
-`plink` is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object, so you can design one in the [playground](https://github.com/OWNER/plink), copy the spec, and replay it anywhere.
+`sonics` is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object, so you can design one in the [playground](https://github.com/OWNER/sonics), copy the spec, and replay it anywhere.
 
 ```js
-import plink from "plinkjs";
+import sonics from "sonics";
 
-plink("click"); // that's it
+sonics("click"); // that's it
 ```
 
 ## Install
 
 ```sh
-npm install plinkjs
+npm install sonics
 ```
 
 ## Quick start
 
 ```js
-import plink, { play, armAutoUnlock } from "plinkjs";
+import sonics, { play, armAutoUnlock } from "sonics";
 
 // Browsers block audio until the first user gesture. Call once on load:
 armAutoUnlock();
 
 play("click"); // a built-in preset
 
-const tap = plink.sound("tap"); // bind a reusable trigger
+const tap = sonics.sound("tap"); // bind a reusable trigger
 button.addEventListener("click", tap);
 
 play("click", { volume: 0.6, rate: 1.2, humanize: 0.5 }); // tweak per play
@@ -64,7 +64,7 @@ play(doorbell);
 ## Design & export
 
 ```js
-import { encode, decode, toWav } from "plinkjs";
+import { encode, decode, toWav } from "sonics";
 
 const str = encode(mySpec); // URL-safe, shareable string
 play(decode(str)); // replay anywhere
@@ -77,19 +77,19 @@ const blob = await toWav("click"); // bake to a 16-bit WAV Blob if you prefer a 
 Zero extra dependencies — React is a peer.
 
 ```jsx
-import { PlinkProvider, useSound, PlinkButton, usePlink } from "plinkjs/react";
+import { SonicsProvider, useSound, SonicsButton, useSonics } from "sonics/react";
 
 function App() {
   return (
-    <PlinkProvider>
+    <SonicsProvider>
       <Toolbar />
-    </PlinkProvider>
+    </SonicsProvider>
   );
 }
 
 function Toolbar() {
   const save = useSound("click");
-  const { enabled, toggle } = usePlink();
+  const { enabled, toggle } = useSonics();
   return (
     <>
       <button
@@ -100,9 +100,9 @@ function Toolbar() {
       >
         Save
       </button>
-      <PlinkButton sound="toggleOn" onClick={next}>
+      <SonicsButton sound="toggleOn" onClick={next}>
         Next
-      </PlinkButton>
+      </SonicsButton>
       <label>
         <input type="checkbox" checked={enabled} onChange={toggle} /> Sound
       </label>
@@ -111,10 +111,10 @@ function Toolbar() {
 }
 ```
 
-- `<PlinkProvider>` — shared enabled/volume state, persisted, defaults off under `prefers-reduced-motion`, arms auto-unlock.
+- `<SonicsProvider>` — shared enabled/volume state, persisted, defaults off under `prefers-reduced-motion`, arms auto-unlock.
 - `useSound(sound, opts)` — a stable trigger callback.
-- `usePlink()` — `{ enabled, setEnabled, toggle, volume, setVolume, play }`; safe without a provider.
-- `<PlinkButton>` — a button (or any `as=` element) that plays on `click` / `pointerdown` / `hover`.
+- `useSonics()` — `{ enabled, setEnabled, toggle, volume, setVolume, play }`; safe without a provider.
+- `<SonicsButton>` — a button (or any `as=` element) that plays on `click` / `pointerdown` / `hover`.
 
 ## Good-citizen defaults
 
@@ -124,7 +124,7 @@ function Toolbar() {
 
 ## Credit
 
-`plink` occupies a specific empty cell: **synth-based** (not file playback), **tasteful UI** (not retro game SFX), tiny/zero-dep, with a designer. It stands on the shoulders of [ZzFX](https://github.com/KilledByAPixel/ZzFX) (Frank Force), [web-haptics](https://github.com/lochie/web-haptics) (Lochie Axon — the sibling-modality design→export loop this mirrors), [sfxr](https://www.drpetter.se/project_sfxr.html) (DrPetter) and its web ports [jsfxr](https://github.com/chr15m/jsfxr) / [jfxr](https://jfxr.frozenfractal.com/), [snd-lib](https://snd.dev/), and [use-sound](https://github.com/joshwcomeau/use-sound) (Josh W. Comeau). The default `click` preset was reverse-engineered from the ElevenLabs onboarding sound. See the root README for the full story.
+`sonics` occupies a specific empty cell: **synth-based** (not file playback), **tasteful UI** (not retro game SFX), tiny/zero-dep, with a designer. It stands on the shoulders of [ZzFX](https://github.com/KilledByAPixel/ZzFX) (Frank Force), [web-haptics](https://github.com/lochie/web-haptics) (Lochie Axon — the sibling-modality design→export loop this mirrors), [sfxr](https://www.drpetter.se/project_sfxr.html) (DrPetter) and its web ports [jsfxr](https://github.com/chr15m/jsfxr) / [jfxr](https://jfxr.frozenfractal.com/), [snd-lib](https://snd.dev/), and [use-sound](https://github.com/joshwcomeau/use-sound) (Josh W. Comeau). The default `click` preset was reverse-engineered from the ElevenLabs onboarding sound. See the root README for the full story.
 
 ## License
 

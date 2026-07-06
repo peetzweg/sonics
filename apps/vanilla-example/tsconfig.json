@@ -3,7 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "paths": {
-      "plinkjs": ["../../packages/plink/src/index.ts"]
+      "sonics": ["../../packages/sonics/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

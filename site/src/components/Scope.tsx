@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { render, type Sound } from "plinkjs";
+import { render, type Sound } from "sonics";
 
 // Fixed LCD palette — the scope is always a dark display.
 const WAVE = "#f05a24";

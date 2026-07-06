@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "plinkjs": "workspace:*"
+    "sonics": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

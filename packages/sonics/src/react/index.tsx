@@ -1,5 +1,5 @@
 /*!
- * plink/react — tiny React bindings for plink. React is a peer dependency.
+ * sonics/react — tiny React bindings for sonics. React is a peer dependency.
  * License: MIT.
  */
 
@@ -15,7 +15,7 @@ import {
   type ElementType,
   type ReactNode,
 } from "react";
-import plink, {
+import sonics, {
   play,
   armAutoUnlock,
   setMuted,
@@ -24,7 +24,7 @@ import plink, {
   type PlayOptions,
 } from "../index.js";
 
-export interface PlinkControls {
+export interface SonicsControls {
   enabled: boolean;
   setEnabled: (v: boolean) => void;
   toggle: () => void;
@@ -33,9 +33,9 @@ export interface PlinkControls {
   play: (sound: SoundInput, opts?: PlayOptions) => void;
 }
 
-const PlinkContext = createContext<PlinkControls | null>(null);
+const SonicsContext = createContext<SonicsControls | null>(null);
 
-const STORAGE_KEY = "plink:prefs";
+const STORAGE_KEY = "sonics:prefs";
 
 function loadPrefs(): { enabled?: boolean; volume?: number } {
   try {
@@ -45,7 +45,7 @@ function loadPrefs(): { enabled?: boolean; volume?: number } {
   }
 }
 
-export interface PlinkProviderProps {
+export interface SonicsProviderProps {
   children?: ReactNode;
   /** Initial enabled state. Defaults to true unless the OS prefers reduced motion. */
   defaultEnabled?: boolean;
@@ -58,7 +58,7 @@ export interface PlinkProviderProps {
  * persists to localStorage, defaults to off when the OS prefers reduced
  * motion, and arms audio auto-unlock on the first gesture.
  */
-export function PlinkProvider({ children, defaultEnabled, defaultVolume = 1 }: PlinkProviderProps) {
+export function SonicsProvider({ children, defaultEnabled, defaultVolume = 1 }: SonicsProviderProps) {
   const prefs = useMemo(() => (typeof window !== "undefined" ? loadPrefs() : {}), []);
   const prefersReduced =
     typeof window !== "undefined" && window.matchMedia
@@ -84,7 +84,7 @@ export function PlinkProvider({ children, defaultEnabled, defaultVolume = 1 }: P
     }
   }, [enabled, volume]);
 
-  const value = useMemo<PlinkControls>(
+  const value = useMemo<SonicsControls>(
     () => ({
       enabled,
       setEnabled: setEnabledState,
@@ -98,13 +98,13 @@ export function PlinkProvider({ children, defaultEnabled, defaultVolume = 1 }: P
     [enabled, volume]
   );
 
-  return createElement(PlinkContext.Provider, { value }, children);
+  return createElement(SonicsContext.Provider, { value }, children);
 }
 
 /** Access the provider's controls. Falls back to a provider-less shim that
- *  always plays, so it's safe to call without a <PlinkProvider>. */
-export function usePlink(): PlinkControls {
-  const ctx = useContext(PlinkContext);
+ *  always plays, so it's safe to call without a <SonicsProvider>. */
+export function useSonics(): SonicsControls {
+  const ctx = useContext(SonicsContext);
   if (ctx) return ctx;
   return {
     enabled: true,
@@ -126,7 +126,7 @@ export function useSound(
   sound: SoundInput,
   opts?: PlayOptions
 ): (overrideOpts?: PlayOptions) => void {
-  const { play: playScoped } = usePlink();
+  const { play: playScoped } = useSonics();
   const ref = useRef({ sound, opts });
   ref.current = { sound, opts };
   return useCallback(
@@ -138,7 +138,7 @@ export function useSound(
   );
 }
 
-export interface PlinkButtonProps {
+export interface SonicsButtonProps {
   sound?: SoundInput;
   soundOpts?: PlayOptions;
   /** Which event fires the sound. Default "click". */
@@ -153,7 +153,7 @@ export interface PlinkButtonProps {
 }
 
 /** Drop-in button that plays a sound on click / pointerdown / hover. */
-export function PlinkButton({
+export function SonicsButton({
   sound = "click",
   soundOpts,
   on = "click",
@@ -163,7 +163,7 @@ export function PlinkButton({
   onPointerEnter,
   children,
   ...rest
-}: PlinkButtonProps) {
+}: SonicsButtonProps) {
   const trigger = useSound(sound, soundOpts);
   return createElement(
     as,
@@ -186,5 +186,5 @@ export function PlinkButton({
   );
 }
 
-export { plink };
-export default usePlink;
+export { sonics };
+export default useSonics;

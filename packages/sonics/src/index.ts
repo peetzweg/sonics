@@ -1,5 +1,5 @@
 /*!
- * plink — tiny, dependency-free UI sounds you can feel.
+ * sonics — tiny, dependency-free UI sounds you can feel.
  *
  * Synthesises pleasant microinteraction sounds at runtime with the Web Audio
  * API. No audio files, no dependencies. Every sound is a plain, serialisable
@@ -113,7 +113,7 @@ export function isSupported(): boolean {
 
 /** Get (or lazily create) the shared AudioContext + master gain node. */
 export function context(): AudioContext {
-  if (!AC) throw new Error("plink: Web Audio API not available");
+  if (!AC) throw new Error("sonics: Web Audio API not available");
   if (!_ctx) {
     _ctx = new AC();
     _master = _ctx.createGain();
@@ -310,7 +310,7 @@ export async function render(sound: SoundInput, opts: RenderOptions = {}): Promi
           (window as unknown as { webkitOfflineAudioContext?: typeof OfflineAudioContext })
             .webkitOfflineAudioContext)
       : null;
-  if (!OAC) throw new Error("plink: OfflineAudioContext not available");
+  if (!OAC) throw new Error("sonics: OfflineAudioContext not available");
   const off = new OAC(1, Math.ceil(sampleRate * dur), sampleRate);
   const nb = whiteNoise(off, 0.03);
   const bus = off.createGain();
@@ -449,17 +449,17 @@ function resolve(sound: SoundInput): Sound {
     try {
       return decode(sound);
     } catch {
-      throw new Error(`plink: unknown preset or bad encoded string "${sound}"`);
+      throw new Error(`sonics: unknown preset or bad encoded string "${sound}"`);
     }
   }
   return sound;
 }
 
 // ---------------------------------------------------------------------------
-// Default export: everything, plus callable shorthand `plink("click")`.
+// Default export: everything, plus callable shorthand `sonics("click")`.
 // ---------------------------------------------------------------------------
 
-export interface Plink {
+export interface Sonics {
   (sound: SoundInput, opts?: PlayOptions): void;
   play: typeof play;
   sound: typeof sound;
@@ -479,7 +479,7 @@ export interface Plink {
   DEFAULT_TICK: typeof DEFAULT_TICK;
 }
 
-const plink: Plink = Object.assign((s: SoundInput, o?: PlayOptions) => play(s, o), {
+const sonics: Sonics = Object.assign((s: SoundInput, o?: PlayOptions) => play(s, o), {
   play,
   sound,
   presets,
@@ -498,4 +498,4 @@ const plink: Plink = Object.assign((s: SoundInput, o?: PlayOptions) => play(s, o
   DEFAULT_TICK,
 });
 
-export default plink;
+export default sonics;

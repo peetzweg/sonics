@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "noEmit": true,
+    "paths": {
+      "sonics": ["../../packages/sonics/src/index.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

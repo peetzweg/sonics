@@ -22,7 +22,7 @@ import sonics, {
   setVolume,
   type SoundInput,
   type PlayOptions,
-} from "../index.js";
+} from "sonics";
 
 export interface SonicsControls {
   enabled: boolean;

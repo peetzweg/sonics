@@ -20,7 +20,7 @@ export default defineConfig((options) => {
     {
       ...shared,
       entry: { "react/index": "src/react/index.tsx" },
-      external: ["react", "react/jsx-runtime", "../index.js"],
+      external: ["react", "react/jsx-runtime", "sonics"],
       banner: { js: '"use client";' },
     },
   ];

@@ -3,7 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "noEmit": true,
-    "types": []
+    "types": [],
+    "paths": {
+      "sonics": ["./src/index.ts"]
+    }
   },
   "include": ["src"]
 }

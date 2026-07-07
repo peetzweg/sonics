@@ -4,20 +4,31 @@
   "description": "Tiny, dependency-free UI sounds you can feel. Synthesised in the browser with the Web Audio API — no audio files.",
   "author": "Philip Poloczek",
   "license": "MIT",
+  "type": "commonjs",
   "sideEffects": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./react": {
-      "types": "./dist/react/index.d.ts",
-      "import": "./dist/react/index.mjs",
-      "require": "./dist/react/index.js"
+      "import": {
+        "types": "./dist/react/index.d.mts",
+        "default": "./dist/react/index.mjs"
+      },
+      "require": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      }
     }
   },
   "files": [
@@ -29,7 +40,10 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint:pkg": "publint --strict && attw --pack . --profile node16"
   },
   "keywords": [
     "web-audio",
@@ -43,6 +57,9 @@
     "react",
     "zero-dependency"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "peerDependencies": {
     "react": ">=16.8.0"
   },
@@ -52,10 +69,13 @@
     }
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.0",
     "@types/react": "^18.3.0",
+    "publint": "^0.3.0",
     "react": "^18.3.0",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
   },
   "repository": {
     "type": "git",

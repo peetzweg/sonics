@@ -1,0 +1,12 @@
+{
+  "name": "consume-tests",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Smoke-tests that the BUILT `sonics` package resolves and runs under different runtimes/module systems (node + bun, ESM + CJS).",
+  "scripts": {
+    "smoke": "node ./esm.mjs && node ./cjs.cjs"
+  },
+  "dependencies": {
+    "sonics": "workspace:*"
+  }
+}

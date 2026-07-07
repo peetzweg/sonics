@@ -2,6 +2,7 @@ packages:
   - "packages/**"
   - "site"
   - "apps/**"
+  - "tests/**"
 
 # esbuild ships a native binary via a postinstall script; tsup and Vite need it.
 allowBuilds:

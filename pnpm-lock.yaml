@@ -9,44 +9,44 @@ importers:
   .:
     devDependencies:
       '@changesets/cli':
-        specifier: ^2.27.0
+        specifier: ^2.31.0
         version: 2.31.0(@types/node@22.20.0)
       prettier:
-        specifier: ^3.3.0
+        specifier: ^3.9.4
         version: 3.9.4
       typescript:
-        specifier: ^5.6.0
+        specifier: ^5.9.3
         version: 5.9.3
 
   apps/react-example:
     dependencies:
       react:
-        specifier: ^18.3.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       sonics:
         specifier: workspace:*
         version: link:../../packages/sonics
     devDependencies:
       '@types/node':
-        specifier: ^22.10.0
+        specifier: ^22.20.0
         version: 22.20.0
       '@types/react':
-        specifier: ^18.3.0
+        specifier: ^18.3.31
         version: 18.3.31
       '@types/react-dom':
-        specifier: ^18.3.0
+        specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.31)
       '@vitejs/plugin-react':
-        specifier: ^4.3.0
+        specifier: ^4.7.0
         version: 4.7.0(vite@5.4.21(@types/node@22.20.0))
       typescript:
-        specifier: ^5.6.0
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^5.4.0
+        specifier: ^5.4.21
         version: 5.4.21(@types/node@22.20.0)
 
   apps/vanilla-example:
@@ -56,13 +56,13 @@ importers:
         version: link:../../packages/sonics
     devDependencies:
       '@types/node':
-        specifier: ^22.10.0
+        specifier: ^22.20.0
         version: 22.20.0
       typescript:
-        specifier: ^5.6.0
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^5.4.0
+        specifier: ^5.4.21
         version: 5.4.21(@types/node@22.20.0)
 
   apps/vue-example:
@@ -71,53 +71,53 @@ importers:
         specifier: workspace:*
         version: link:../../packages/sonics
       vue:
-        specifier: ^3.5.0
+        specifier: ^3.5.39
         version: 3.5.39(typescript@5.9.3)
     devDependencies:
       '@types/node':
-        specifier: ^22.10.0
+        specifier: ^22.20.0
         version: 22.20.0
       '@vitejs/plugin-vue':
-        specifier: ^5.1.0
+        specifier: ^5.2.4
         version: 5.2.4(vite@5.4.21(@types/node@22.20.0))(vue@3.5.39(typescript@5.9.3))
       typescript:
-        specifier: ^5.6.0
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^5.4.0
+        specifier: ^5.4.21
         version: 5.4.21(@types/node@22.20.0)
       vue-tsc:
-        specifier: ^2.1.0
+        specifier: ^2.2.12
         version: 2.2.12(typescript@5.9.3)
 
   packages/sonics:
     devDependencies:
       '@arethetypeswrong/cli':
-        specifier: ^0.18.0
+        specifier: ^0.18.4
         version: 0.18.4
       '@types/react':
-        specifier: ^18.3.0
+        specifier: ^18.3.31
         version: 18.3.31
       publint:
-        specifier: ^0.3.0
+        specifier: ^0.3.21
         version: 0.3.21
       react:
-        specifier: ^18.3.0
+        specifier: ^18.3.1
         version: 18.3.1
       tsup:
-        specifier: ^8.3.0
+        specifier: ^8.5.1
         version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
       typescript:
-        specifier: ^5.6.0
+        specifier: ^5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^2.1.0
+        specifier: ^2.1.9
         version: 2.1.9(@types/node@22.20.0)
 
   site:
     dependencies:
       motion:
-        specifier: ^11.11.17
+        specifier: ^11.18.2
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.1
@@ -130,22 +130,22 @@ importers:
         version: link:../packages/sonics
     devDependencies:
       '@types/node':
-        specifier: ^22.10.0
+        specifier: ^22.20.0
         version: 22.20.0
       '@types/react':
-        specifier: ^18.3.0
+        specifier: ^18.3.31
         version: 18.3.31
       '@types/react-dom':
-        specifier: ^18.3.0
+        specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.31)
       '@vitejs/plugin-react':
-        specifier: ^4.3.0
+        specifier: ^4.7.0
         version: 4.7.0(vite@5.4.21(@types/node@22.20.0))
       typescript:
-        specifier: ^5.6.0
+        specifier: ^5.9.3
         version: 5.9.3
       vite:
-        specifier: ^5.4.0
+        specifier: ^5.4.21
         version: 5.4.21(@types/node@22.20.0)
 
   tests/consume:
@@ -977,8 +977,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  baseline-browser-mapping@2.10.40:
-    resolution: {integrity: sha512-BSSLZ9/Cjjv7Gtj5B68ZzXcXUg8iOf3fme+FCuh8rC/Go+Kmh8cox7M3A8dolou16s64QjLPOSdngh7GxXvkSw==}
+  baseline-browser-mapping@2.10.42:
+    resolution: {integrity: sha512-c/jurFrDLyui7o1J86yLkRu4LMsTYcBohveus7/I2Hzdn9KIP2bdJPTue/lR1KH46enoPbD77GKeSYNdyPoD3Q==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1008,8 +1008,8 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
-  caniuse-lite@1.0.30001800:
-    resolution: {integrity: sha512-MMHtuAz9Ys840zAY5F4k6fV5GaivZ9sPk+nz0mY+GYVzRBnYkN0mpqkSR92oWRQ19yQWo4HvBV/FnC16AJX8MA==}
+  caniuse-lite@1.0.30001802:
+    resolution: {integrity: sha512-vmv8ub2xwTNmljSKf82mtCk5JH7hC+YgzLj3P5zotvA0tPQ9016tdNNOG8WRca1IxOnhSsivB+J0z5FeE5LOUw==}
 
   chai@5.3.3:
     resolution: {integrity: sha512-4zNhdJD/iOjSH0A05ea+Ke6MU5mmpQcbQsSOkgdaUMJ9zTlDTD/GYlwohmIE2u0gaxHYiVHEn1Fw9mZ/ktJWgw==}
@@ -1109,8 +1109,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  electron-to-chromium@1.5.384:
-    resolution: {integrity: sha512-g6KAKY1vkYsADvSPWvdJsuYT0ixdcu6lUtD9P/wJKGBEDlZVXh2AX42j1mPqqaQPDluWjara9ziQ7xqAeXCt5A==}
+  electron-to-chromium@1.5.387:
+    resolution: {integrity: sha512-TaxwufTFDufvPEoXdhwVrA3UdFWBeWGkYoJ1K8ldF1xe6gKfth6iRNS5lTQ5JPNOHdGQm8PT1QYKUqFLCiUefQ==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -1256,8 +1256,8 @@ packages:
     resolution: {integrity: sha512-K3GbkIWqyvvlpfhBPlbEvD97TtqBpAYA4kt+cn2lD2x2HuohzZCibcA2nOlnJT6exqvJLggoB5nv2dNf192nEA==}
     hasBin: true
 
-  iconv-lite@0.7.2:
-    resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
+  iconv-lite@0.7.3:
+    resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
 
   ignore@5.3.2:
@@ -1500,8 +1500,8 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.4:
-    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
+  picomatch@4.0.5:
+    resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
     engines: {node: '>=12'}
 
   pify@4.0.1:
@@ -2334,7 +2334,7 @@ snapshots:
   '@inquirer/external-editor@1.0.3(@types/node@22.20.0)':
     dependencies:
       chardet: 2.2.0
-      iconv-lite: 0.7.2
+      iconv-lite: 0.7.3
     optionalDependencies:
       '@types/node': 22.20.0
 
@@ -2685,7 +2685,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  baseline-browser-mapping@2.10.40: {}
+  baseline-browser-mapping@2.10.42: {}
 
   better-path-resolve@1.0.0:
     dependencies:
@@ -2701,9 +2701,9 @@ snapshots:
 
   browserslist@4.28.4:
     dependencies:
-      baseline-browser-mapping: 2.10.40
-      caniuse-lite: 1.0.30001800
-      electron-to-chromium: 1.5.384
+      baseline-browser-mapping: 2.10.42
+      caniuse-lite: 1.0.30001802
+      electron-to-chromium: 1.5.387
       node-releases: 2.0.50
       update-browserslist-db: 1.2.3(browserslist@4.28.4)
 
@@ -2714,7 +2714,7 @@ snapshots:
 
   cac@6.7.14: {}
 
-  caniuse-lite@1.0.30001800: {}
+  caniuse-lite@1.0.30001802: {}
 
   chai@5.3.3:
     dependencies:
@@ -2802,7 +2802,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  electron-to-chromium@1.5.384: {}
+  electron-to-chromium@1.5.387: {}
 
   emoji-regex@8.0.0: {}
 
@@ -2900,9 +2900,9 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.5
 
   fflate@0.8.3: {}
 
@@ -2972,7 +2972,7 @@ snapshots:
 
   human-id@4.2.0: {}
 
-  iconv-lite@0.7.2:
+  iconv-lite@0.7.3:
     dependencies:
       safer-buffer: 2.1.2
 
@@ -3165,7 +3165,7 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  picomatch@4.0.4: {}
+  picomatch@4.0.5: {}
 
   pify@4.0.1: {}
 
@@ -3360,8 +3360,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.5)
+      picomatch: 4.0.5
 
   tinypool@1.1.1: {}
 

@@ -11,7 +11,6 @@ concurrency:
 
 jobs:
   verify:
-    name: typecheck · test · build · package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +41,6 @@ jobs:
           pnpm --filter=vue-example build
 
   consume-node:
-    name: consume (node ${{ matrix.node }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -60,7 +58,6 @@ jobs:
         run: pnpm --filter=consume-tests smoke
 
   consume-bun:
-    name: consume (bun)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

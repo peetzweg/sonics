@@ -479,7 +479,9 @@ export interface Sonics {
   DEFAULT_TICK: typeof DEFAULT_TICK;
 }
 
-const sonics: Sonics = Object.assign((s: SoundInput, o?: PlayOptions) => play(s, o), {
+// `@__PURE__` lets bundlers drop this default-export object when a consumer
+// only uses named imports — so `import { play }` tree-shakes away render/toWav/etc.
+const sonics: Sonics = /* @__PURE__ */ Object.assign((s: SoundInput, o?: PlayOptions) => play(s, o), {
   play,
   sound,
   presets,

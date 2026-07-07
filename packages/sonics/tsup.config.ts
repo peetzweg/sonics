@@ -1,12 +1,14 @@
 import { defineConfig, type Options } from "tsup";
 
-export default defineConfig((options) => {
+export default defineConfig(() => {
   const shared: Partial<Options> = {
     format: ["cjs", "esm"],
     dts: true,
     target: "es2022",
     treeshake: true,
-    minify: !options.watch,
+    // ship the library ESM unminified so consumers' bundlers can tree-shake it
+    // (and so the /* @__PURE__ */ annotation on the default export survives)
+    minify: false,
   };
 
   return [

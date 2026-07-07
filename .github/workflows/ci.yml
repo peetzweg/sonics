@@ -40,37 +40,46 @@ jobs:
           pnpm --filter=vanilla-example build
           pnpm --filter=vue-example build
 
-  consume-node:
+      - name: pack the publishable tarball
+        run: |
+          pnpm --filter=sonics pack --pack-destination "$GITHUB_WORKSPACE/pkg"
+          mv "$GITHUB_WORKSPACE"/pkg/*.tgz "$GITHUB_WORKSPACE/pkg/sonics.tgz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sonics-pkg
+          path: pkg/sonics.tgz
+
+  # Install the BUILT tarball with npm (no pnpm — pnpm needs node >=22.13) and
+  # import it under each runtime. This tests the real published artifact.
+  consume:
+    name: consume-${{ matrix.name }}
+    needs: verify
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        node: [20, 22]
+        include:
+          - { name: node20, runtime: node, node: "20" }
+          - { name: node22, runtime: node, node: "22" }
+          - { name: bun, runtime: bun, node: "22", bun: true }
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter=sonics build
-      - name: import the built package (esm + cjs)
-        run: pnpm --filter=consume-tests smoke
-
-  consume-bun:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - if: matrix.bun
+        uses: oven-sh/setup-bun@v2
+      - uses: actions/download-artifact@v4
         with:
-          node-version: 22
-          cache: pnpm
-      - uses: oven-sh/setup-bun@v2
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter=sonics build
-      - name: import the built package under bun (esm + cjs)
-        working-directory: tests/consume
+          name: sonics-pkg
+          path: pkg
+      - name: install the tarball and import it (esm + cjs)
         run: |
-          bun run ./esm.mjs
-          bun run ./cjs.cjs
+          work="$RUNNER_TEMP/consume"
+          mkdir -p "$work"
+          cp tests/consume/esm.mjs tests/consume/cjs.cjs "$work/"
+          cd "$work"
+          npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE/pkg/sonics.tgz"
+          ${{ matrix.runtime }} ./esm.mjs
+          ${{ matrix.runtime }} ./cjs.cjs

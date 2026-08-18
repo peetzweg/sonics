@@ -5,7 +5,8 @@
     "noEmit": true,
     "paths": {
       "sonics": ["../packages/sonics/src/index.ts"],
-      "sonics/react": ["../packages/sonics/src/react/index.tsx"]
+      "sonics/react": ["../packages/sonics/src/react/index.tsx"],
+      "sonics/presets": ["../packages/sonics/src/presets/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

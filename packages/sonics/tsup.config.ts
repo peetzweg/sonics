@@ -18,6 +18,12 @@ export default defineConfig(() => {
       entry: { index: "src/index.ts" },
       clean: true,
     },
+    // Add-on preset kits — plain data, kept out of the core bundle
+    {
+      ...shared,
+      entry: { "presets/index": "src/presets/index.ts" },
+      external: ["sonics"],
+    },
     // React bindings — react is external
     {
       ...shared,

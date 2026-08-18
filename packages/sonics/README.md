@@ -61,6 +61,74 @@ play(doorbell);
 | `bright`   | high attack "tick" transient (0..1)      | `0.55`   |
 | `partial`  | high-partial multiplier (`freq*partial`) | `3.3`    |
 
+Beyond the struck-resonator core, a tick can also be a plain voice — a tone
+that swells, glides, or breathes:
+
+| Tick field  | meaning                                      | default      |
+| ----------- | -------------------------------------------- | ------------ |
+| `attack`    | fade-in time (s) — raise it for swells       | `0.0004`     |
+| `curve`     | fade-in shape: `"linear"` or `"exp"`         | `"linear"`   |
+| `wave`      | oscillator shape for tail + partial          | `"sine"`     |
+| `filter`    | filter type for the noise burst              | `"bandpass"` |
+| `glideTo`   | glide the tail from `freq` to this Hz        | —            |
+| `glideTime` | how long the glide takes (s)                 | `decay`      |
+| `ring`      | how much longer the tail rings than the body | `1.25`       |
+
+`decay` is measured from the tick's start, so a long `attack` eats into it
+rather than stretching the tick. Set `ring: 1` when you want a plain tone whose
+decay means exactly what it says.
+
+A whole sound can also carry a `shimmer` — a short low-passed feedback delay,
+the "air" that makes a chime sound like it is in a room rather than in a wire:
+
+```js
+play({
+  volume: 0.5,
+  ticks: [
+    {
+      freq: 1046.5,
+      gain: 0.36,
+      attack: 0.006,
+      curve: "exp",
+      decay: 0.23,
+      noise: 0,
+      tail: 1,
+      bright: 0,
+      ring: 1,
+    },
+  ],
+  shimmer: { delay: 0.12, feedback: 0.25, wet: 0.18, lowpass: 4000 },
+});
+```
+
+## The cuelume kit
+
+Seventeen designed interaction sounds by [Daniel Belyi](https://github.com/Danilaa1/cuelume)
+(MIT), ported to sonics specs and shipped from a separate subpath so the core
+stays small — you only pay the ~2.8 KB gzipped if you import it:
+
+```js
+import { play, register } from "sonics";
+import { cuelume } from "sonics/presets";
+
+play(cuelume.chime); // pass the spec directly — always works
+
+register(cuelume); // or teach sonics the names
+play("arrival");
+```
+
+`chime` · `sparkle` · `droplet` · `bloom` · `whisper` · `tick` · `press` ·
+`release` · `toggle` · `success` · `error` · `page` · `loading` · `ready` ·
+`pulse` · `scan` · `arrival`
+
+Because they are ordinary specs, they behave like everything else here: open one
+in the playground and drag its sliders, `encode()` it into a permalink, or
+`toWav()` it into a file.
+
+`register(name, spec)` also works for your own sounds — it is how you give
+anything a name that `play()` answers to. Registered names shadow the built-in
+presets, and `registered()` returns everything `play()` currently knows.
+
 ## Design & export
 
 ```js
@@ -125,6 +193,11 @@ function Toolbar() {
 ## Credit
 
 `sonics` occupies a specific empty cell: **synth-based** (not file playback), **tasteful UI** (not retro game SFX), tiny/zero-dep, with a designer. It stands on the shoulders of [ZzFX](https://github.com/KilledByAPixel/ZzFX) (Frank Force), [web-haptics](https://github.com/lochie/web-haptics) (Lochie Axon — the sibling-modality design→export loop this mirrors), [sfxr](https://www.drpetter.se/project_sfxr.html) (DrPetter) and its web ports [jsfxr](https://github.com/chr15m/jsfxr) / [jfxr](https://jfxr.frozenfractal.com/), [snd-lib](https://snd.dev/), and [use-sound](https://github.com/joshwcomeau/use-sound) (Josh W. Comeau). The default `click` preset was reverse-engineered from the ElevenLabs onboarding sound. See the root README for the full story.
+
+The seventeen sounds in `sonics/presets` are the [cuelume](https://github.com/Danilaa1/cuelume)
+palette — designed by **Daniel Belyi**, MIT-licensed, ported here with the
+licence notice kept intact in `src/presets/cuelume.ts`. The sound design is
+theirs; only the translation into sonics specs is ours.
 
 ## License
 

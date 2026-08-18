@@ -886,3 +886,11 @@ footer {
   padding: 10px 18px;
   z-index: 40;
 }
+
+/* sub-heading inside a section (e.g. the cuelume kit under the presets) */
+.shead.sub {
+  margin-top: 1.4rem;
+}
+.shead.sub h2 {
+  opacity: 0.75;
+}

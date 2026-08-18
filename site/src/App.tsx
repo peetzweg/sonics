@@ -1,12 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import sonics, { play, presets, encode, decode, armAutoUnlock, type Sound } from "sonics";
+import { cuelume } from "sonics/presets";
 import { Knob } from "./components/Knob.js";
 import { Fader } from "./components/Fader.js";
 import { Scope } from "./components/Scope.js";
 import { PRIMARY, SECONDARY, valueOf, fmt, newTick, shuffleSpec, type Param } from "./params.js";
 
 const PRESET_NAMES = Object.keys(presets) as Array<keyof typeof presets>;
+// The cuelume palette (MIT © Daniel Belyi) — loaded as ordinary specs, so
+// every one of them is editable here like anything else.
+const KIT: Record<string, Sound> = { ...presets, ...cuelume };
+const CUELUME_NAMES = Object.keys(cuelume);
 const MAX_HISTORY = 60;
 
 const reveal = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } };
@@ -114,8 +119,8 @@ export function App() {
   }, [record]);
 
   const loadPreset = useCallback(
-    (name: keyof typeof presets) => {
-      const s = structuredClone(presets[name]);
+    (name: string) => {
+      const s = structuredClone(KIT[name]);
       setSpec(s);
       setActive(0);
       setPreset(name);
@@ -150,7 +155,10 @@ export function App() {
   const addTick = useCallback(() => {
     const s = specRef.current;
     const last = s.ticks[s.ticks.length - 1];
-    const ns: Sound = { ...s, ticks: [...s.ticks, newTick((last?.at ?? 0) + 0.03, last?.freq ?? 3120)] };
+    const ns: Sound = {
+      ...s,
+      ticks: [...s.ticks, newTick((last?.at ?? 0) + 0.03, last?.freq ?? 3120)],
+    };
     setSpec(ns);
     setActive(ns.ticks.length - 1);
     setPreset(null);
@@ -322,7 +330,12 @@ export function App() {
             <span className="lcd-label">{mode === "wave" ? "waveform" : "spectrum · db"}</span>
             <div className="tabs" role="group" aria-label="Visualisation">
               {(["wave", "spec"] as const).map((m) => (
-                <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className="tab">
+                <button
+                  key={m}
+                  aria-pressed={mode === m}
+                  onClick={() => setMode(m)}
+                  className="tab"
+                >
                   {mode === m && <motion.span layoutId="tabsel" className="tabsel" />}
                   <span className="tablabel">{m === "wave" ? "wave" : "spectrum"}</span>
                 </button>
@@ -359,6 +372,27 @@ export function App() {
             </button>
           ))}
         </div>
+        <div className="shead sub">
+          <h2>cuelume</h2>
+          <span className="note">
+            17 sounds by{" "}
+            <a href="https://github.com/Danilaa1/cuelume" target="_blank" rel="noreferrer">
+              Daniel Belyi
+            </a>{" "}
+            · MIT · ported to specs
+          </span>
+        </div>
+        <div className="presets">
+          {CUELUME_NAMES.map((name) => (
+            <button
+              key={name}
+              className={preset === name ? "on" : ""}
+              onClick={() => loadPreset(name)}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
       </motion.section>
       <hr className="rule" />
 
@@ -366,7 +400,9 @@ export function App() {
         <div className="shead">
           <span className="idx">02</span>
           <h2>ticks</h2>
-          <span className="note">one impulse each · {alt ? "alt function" : "hold alt to flip"}</span>
+          <span className="note">
+            one impulse each · {alt ? "alt function" : "hold alt to flip"}
+          </span>
         </div>
 
         <div className="tickbar">
@@ -492,14 +528,13 @@ function Save() {
           everyone who <em>synthesises</em> sound in the browser aimed at retro game sfx; everyone
           aiming at tasteful ui shipped audio <em>files</em>. sonics sits in the empty cell — tiny,
           synth-based, tasteful, with a designer. inspirations:{" "}
-          <a href="https://github.com/KilledByAPixel/ZzFX">zzfx</a> (frank force) for the sub-1&nbsp;kb
-          synth + designer pattern, and <a href="https://haptics.lochie.me/">web-haptics</a> (lochie
-          axon) for the design→export loop this mirrors. also{" "}
-          <a href="https://www.drpetter.se/project_sfxr.html">sfxr</a>,{" "}
+          <a href="https://github.com/KilledByAPixel/ZzFX">zzfx</a> (frank force) for the
+          sub-1&nbsp;kb synth + designer pattern, and{" "}
+          <a href="https://haptics.lochie.me/">web-haptics</a> (lochie axon) for the design→export
+          loop this mirrors. also <a href="https://www.drpetter.se/project_sfxr.html">sfxr</a>,{" "}
           <a href="https://github.com/chr15m/jsfxr">jsfxr</a>,{" "}
-          <a href="https://jfxr.frozenfractal.com/">jfxr</a>,{" "}
-          <a href="https://snd.dev/">snd-lib</a>, and{" "}
-          <a href="https://github.com/joshwcomeau/use-sound">use-sound</a>. the default{" "}
+          <a href="https://jfxr.frozenfractal.com/">jfxr</a>, <a href="https://snd.dev/">snd-lib</a>
+          , and <a href="https://github.com/joshwcomeau/use-sound">use-sound</a>. the default{" "}
           <code>click</code> was reverse-engineered from the elevenlabs onboarding sound.
         </p>
       </motion.section>

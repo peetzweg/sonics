@@ -39,6 +39,42 @@ export interface Tick {
   bright?: number;
   /** High-partial frequency multiplier (freq * partial). Default 3.3. */
   partial?: number;
+  /** Fade-in time in seconds. Default 0.0004 (0.4 ms) — just enough to
+   *  avoid a hard digital edge. Raise it for pads, swells and breaths. */
+  attack?: number;
+  /** Shape of the fade-in. At a sub-millisecond attack the two are
+   *  interchangeable; over a long swell "exp" rises the way the ear hears
+   *  loudness (constant dB per second) while "linear" lurches in.
+   *  Default "linear". */
+  curve?: "linear" | "exp";
+  /** Oscillator shape for the tail and partial. Default "sine". */
+  wave?: OscillatorType;
+  /** Filter type for the noise burst. Default "bandpass". */
+  filter?: BiquadFilterType;
+  /** If set, the tail glides from `freq` to this frequency (Hz). */
+  glideTo?: number;
+  /** How long the glide takes, in seconds. Defaults to the tick's `decay`. */
+  glideTime?: number;
+  /** How much longer the resonant tail rings than the noise body — a struck
+   *  body keeps ringing after the strike itself is over. Default 1.25.
+   *  Set to 1 for a plain tone whose decay means exactly what it says. */
+  ring?: number;
+}
+
+/**
+ * A soft feedback-delay tail applied to the whole sound. A short delay fed
+ * back through a low-pass — the "air" that makes a chime sound like it is in
+ * a room rather than in a wire.
+ */
+export interface Shimmer {
+  /** Delay time in seconds. */
+  delay: number;
+  /** Feedback amount, 0..1. Higher rings longer. */
+  feedback: number;
+  /** Wet level mixed back in, 0..1. */
+  wet: number;
+  /** Low-pass cutoff inside the feedback loop (Hz) — each repeat gets darker. */
+  lowpass: number;
 }
 
 /** A complete sound: master volume plus one or more ticks. */
@@ -46,6 +82,8 @@ export interface Sound {
   /** Master gain for the whole sound. Default 0.9. */
   volume?: number;
   ticks: Tick[];
+  /** Optional feedback-delay tail applied to the whole sound. */
+  shimmer?: Shimmer;
   /** Optional label, purely for humans. */
   name?: string;
 }
@@ -73,7 +111,7 @@ export type SoundInput = Sound | PresetName | (string & {});
 // Defaults
 // ---------------------------------------------------------------------------
 
-export const DEFAULT_TICK: Required<Tick> = {
+export const DEFAULT_TICK: Required<Omit<Tick, "glideTo" | "glideTime">> = {
   at: 0,
   gain: 0.5,
   freq: 3120,
@@ -83,10 +121,15 @@ export const DEFAULT_TICK: Required<Tick> = {
   tail: 0.6,
   bright: 0.55,
   partial: 3.3,
+  attack: 0.0004,
+  curve: "linear",
+  wave: "sine",
+  filter: "bandpass",
+  ring: 1.25,
 };
 
-const ATTACK = 0.0004; // 0.4 ms — soft enough to avoid a hard digital edge
 const FLOOR = 0.0001; // exponential ramps can't reach 0
+const NOISE_SECONDS = 0.5; // shared noise buffer — long enough for slow beds
 
 // ---------------------------------------------------------------------------
 // Engine — one shared, lazily-created AudioContext
@@ -95,8 +138,9 @@ const FLOOR = 0.0001; // exponential ramps can't reach 0
 type Ctor = typeof AudioContext;
 const AC: Ctor | null =
   typeof window !== "undefined"
-    ? ((window.AudioContext || (window as unknown as { webkitAudioContext?: Ctor }).webkitAudioContext) ??
-        null)
+    ? ((window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: Ctor }).webkitAudioContext) ??
+      null)
     : null;
 
 let _ctx: AudioContext | null = null;
@@ -119,7 +163,7 @@ export function context(): AudioContext {
     _master = _ctx.createGain();
     _master.gain.value = _volume;
     _master.connect(_ctx.destination);
-    _noiseBuf = whiteNoise(_ctx, 0.03);
+    _noiseBuf = whiteNoise(_ctx, NOISE_SECONDS);
   }
   return _ctx;
 }
@@ -162,7 +206,11 @@ export function getVolume(): number {
 }
 
 function whiteNoise(ctx: BaseAudioContext, seconds: number): AudioBuffer {
-  const buf = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * seconds)), ctx.sampleRate);
+  const buf = ctx.createBuffer(
+    1,
+    Math.max(1, Math.floor(ctx.sampleRate * seconds)),
+    ctx.sampleRate
+  );
   const d = buf.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   return buf;
@@ -181,52 +229,107 @@ function scheduleTick(
 ): void {
   const t = { ...DEFAULT_TICK, ...raw };
   const t0 = start + t.at;
+  // Envelopes: rise over `attack`, then decay to silence. `decay` is measured
+  // from the tick's start, so a long attack eats into it rather than
+  // stretching the tick — the tick's length is what you asked for.
+  const atk = Math.max(FLOOR, t.attack);
+  const rise = (g: GainNode, to: number, at: number, over: number) => {
+    if (t.curve === "exp") {
+      g.gain.setValueAtTime(FLOOR, at);
+      g.gain.exponentialRampToValueAtTime(Math.max(FLOOR * 2, to), at + over);
+    } else {
+      g.gain.setValueAtTime(0, at);
+      g.gain.linearRampToValueAtTime(to, at + over);
+    }
+  };
+  const bodyEnd = t0 + Math.max(atk + FLOOR, t.decay);
+  const tailEnd = t0 + Math.max(atk + FLOOR, t.decay * t.ring);
 
   // 1. impulse → resonant body: noise burst through a band-pass filter.
   if (t.noise > 0) {
     const src = ctx.createBufferSource();
     src.buffer = noiseBuf;
+    src.loop = true; // slow beds outrun a single pass of the buffer
     const bp = ctx.createBiquadFilter();
-    bp.type = "bandpass";
+    bp.type = t.filter;
     bp.frequency.value = t.freq;
     bp.Q.value = t.q;
     const g = ctx.createGain();
-    g.gain.setValueAtTime(0, t0);
-    g.gain.linearRampToValueAtTime(t.gain * t.noise, t0 + ATTACK);
-    g.gain.exponentialRampToValueAtTime(FLOOR, t0 + t.decay);
+    rise(g, t.gain * t.noise, t0, atk);
+    g.gain.exponentialRampToValueAtTime(FLOOR, bodyEnd);
     src.connect(bp).connect(g).connect(dest);
     src.start(t0);
-    src.stop(t0 + t.decay + 0.02);
+    src.stop(bodyEnd + 0.02);
   }
 
   // 2. pure resonant tail: a sine at the resonant frequency (the bright
   //    horizontal line you see on the spectrogram).
   if (t.tail > 0) {
     const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = t.freq;
+    osc.type = t.wave;
+    osc.frequency.setValueAtTime(t.freq, t0);
+    if (t.glideTo !== undefined && t.glideTo > 0) {
+      const glide = Math.max(FLOOR, t.glideTime ?? t.decay);
+      osc.frequency.exponentialRampToValueAtTime(t.glideTo, t0 + glide);
+    }
     const g = ctx.createGain();
-    g.gain.setValueAtTime(0, t0);
-    g.gain.linearRampToValueAtTime(t.gain * t.tail, t0 + ATTACK);
-    g.gain.exponentialRampToValueAtTime(FLOOR, t0 + t.decay * 1.25);
+    rise(g, t.gain * t.tail, t0, atk);
+    g.gain.exponentialRampToValueAtTime(FLOOR, tailEnd);
     osc.connect(g).connect(dest);
     osc.start(t0);
-    osc.stop(t0 + t.decay * 1.5 + 0.02);
+    osc.stop(tailEnd + 0.02);
   }
 
   // 3. high attack transient: the crisp "tick" on top.
   if (t.bright > 0) {
     const osc = ctx.createOscillator();
-    osc.type = "sine";
+    osc.type = t.wave;
     osc.frequency.value = t.freq * t.partial;
     const g = ctx.createGain();
-    g.gain.setValueAtTime(0, t0);
-    g.gain.linearRampToValueAtTime(t.gain * 0.3 * t.bright, t0 + ATTACK * 0.75);
-    g.gain.exponentialRampToValueAtTime(FLOOR, t0 + 0.004);
+    rise(g, t.gain * 0.3 * t.bright, t0, atk * 0.75);
+    g.gain.exponentialRampToValueAtTime(FLOOR, t0 + atk * 0.75 + 0.004);
     osc.connect(g).connect(dest);
     osc.start(t0);
-    osc.stop(t0 + 0.02);
+    osc.stop(t0 + atk * 0.75 + 0.024);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Shimmer — a short feedback delay, low-passed, that gives a sound some air
+// ---------------------------------------------------------------------------
+
+function attachShimmer(
+  ctx: BaseAudioContext,
+  src: AudioNode,
+  dest: AudioNode,
+  s: Shimmer
+): AudioNode[] {
+  const delay = ctx.createDelay(1);
+  delay.delayTime.value = Math.min(1, Math.max(0, s.delay));
+
+  const damp = ctx.createBiquadFilter();
+  damp.type = "lowpass";
+  damp.frequency.value = s.lowpass;
+
+  const fb = ctx.createGain();
+  fb.gain.value = Math.min(0.95, Math.max(0, s.feedback)); // < 1 or it runs away
+
+  const wet = ctx.createGain();
+  wet.gain.value = Math.max(0, s.wet);
+
+  src.connect(delay);
+  delay.connect(damp);
+  damp.connect(fb).connect(delay); // the loop
+  damp.connect(wet).connect(dest);
+
+  return [delay, damp, fb, wet];
+}
+
+/** How long a shimmer keeps ringing before it drops below audibility. */
+function shimmerDuration(s?: Shimmer): number {
+  if (!s || s.feedback <= 0 || s.wet <= 0) return 0;
+  const fb = Math.min(0.95, s.feedback);
+  return s.delay * (1 + Math.ceil(Math.log(FLOOR) / Math.log(fb)));
 }
 
 /** Total scheduled duration of a spec, in seconds (for offline rendering). */
@@ -234,9 +337,10 @@ function specDuration(spec: Sound): number {
   let end = 0;
   for (const raw of spec.ticks ?? []) {
     const t = { ...DEFAULT_TICK, ...raw };
-    end = Math.max(end, t.at + t.decay * 1.5 + 0.03);
+    const ring = t.tail > 0 ? t.ring : 1;
+    end = Math.max(end, t.at + Math.max(t.attack, t.decay * ring) + 0.03);
   }
-  return end || 0.05;
+  return (end || 0.05) + shimmerDuration(spec.shimmer);
 }
 
 // ---------------------------------------------------------------------------
@@ -259,6 +363,7 @@ export function play(sound: SoundInput, opts: PlayOptions = {}): void {
   const bus = ctx.createGain();
   bus.gain.value = (spec.volume ?? 0.9) * volume;
   bus.connect(_master!);
+  const air = spec.shimmer ? attachShimmer(ctx, bus, _master!, spec.shimmer) : [];
 
   const start = ctx.currentTime + Math.max(0, when) + 0.005;
   const jitter = (amt: number) => 1 + (Math.random() * 2 - 1) * amt;
@@ -282,6 +387,7 @@ export function play(sound: SoundInput, opts: PlayOptions = {}): void {
     () => {
       try {
         bus.disconnect();
+        for (const n of air) n.disconnect();
       } catch {
         /* already gone */
       }
@@ -306,16 +412,17 @@ export async function render(sound: SoundInput, opts: RenderOptions = {}): Promi
   const dur = specDuration(spec) + tail;
   const OAC =
     typeof window !== "undefined"
-      ? (window.OfflineAudioContext ||
-          (window as unknown as { webkitOfflineAudioContext?: typeof OfflineAudioContext })
-            .webkitOfflineAudioContext)
+      ? window.OfflineAudioContext ||
+        (window as unknown as { webkitOfflineAudioContext?: typeof OfflineAudioContext })
+          .webkitOfflineAudioContext
       : null;
   if (!OAC) throw new Error("sonics: OfflineAudioContext not available");
   const off = new OAC(1, Math.ceil(sampleRate * dur), sampleRate);
-  const nb = whiteNoise(off, 0.03);
+  const nb = whiteNoise(off, NOISE_SECONDS);
   const bus = off.createGain();
   bus.gain.value = spec.volume ?? 0.9;
   bus.connect(off.destination);
+  if (spec.shimmer) attachShimmer(off, bus, off.destination, spec.shimmer);
   for (const raw of spec.ticks) scheduleTick(off, bus, 0.001, raw, nb);
   return off.startRendering();
 }
@@ -440,12 +547,36 @@ export const presets = {
 export type PresetName = keyof typeof presets;
 
 // ---------------------------------------------------------------------------
+// Registry — teach sonics extra names, so `play("chime")` works for your own
+// sounds (and for add-on kits like `sonics/presets`).
+// ---------------------------------------------------------------------------
+
+const registry = new Map<string, Sound>();
+
+/** Name one sound, or a whole kit at once. Names shadow the built-in presets. */
+export function register(name: string, spec: Sound): void;
+export function register(kit: Record<string, Sound>): void;
+export function register(nameOrKit: string | Record<string, Sound>, spec?: Sound): void {
+  if (typeof nameOrKit === "string") {
+    if (spec) registry.set(nameOrKit, spec);
+    return;
+  }
+  for (const [name, s] of Object.entries(nameOrKit)) registry.set(name, s);
+}
+
+/** Every name `play()` currently answers to — built-ins plus anything registered. */
+export function registered(): Record<string, Sound> {
+  return { ...presets, ...Object.fromEntries(registry) };
+}
+
+// ---------------------------------------------------------------------------
 // Internal
 // ---------------------------------------------------------------------------
 
 function resolve(sound: SoundInput): Sound {
   if (typeof sound === "string") {
-    if (sound in presets) return presets[sound as PresetName];
+    const named = registry.get(sound) ?? (sound in presets ? presets[sound as PresetName] : null);
+    if (named) return named;
     try {
       return decode(sound);
     } catch {
@@ -464,6 +595,8 @@ export interface Sonics {
   play: typeof play;
   sound: typeof sound;
   presets: typeof presets;
+  register: typeof register;
+  registered: typeof registered;
   render: typeof render;
   toWav: typeof toWav;
   encode: typeof encode;
@@ -481,23 +614,28 @@ export interface Sonics {
 
 // `@__PURE__` lets bundlers drop this default-export object when a consumer
 // only uses named imports — so `import { play }` tree-shakes away render/toWav/etc.
-const sonics: Sonics = /* @__PURE__ */ Object.assign((s: SoundInput, o?: PlayOptions) => play(s, o), {
-  play,
-  sound,
-  presets,
-  render,
-  toWav,
-  encode,
-  decode,
-  context,
-  unlock,
-  armAutoUnlock,
-  isSupported,
-  setMuted,
-  isMuted,
-  setVolume,
-  getVolume,
-  DEFAULT_TICK,
-});
+const sonics: Sonics = /* @__PURE__ */ Object.assign(
+  (s: SoundInput, o?: PlayOptions) => play(s, o),
+  {
+    play,
+    sound,
+    presets,
+    register,
+    registered,
+    render,
+    toWav,
+    encode,
+    decode,
+    context,
+    unlock,
+    armAutoUnlock,
+    isSupported,
+    setMuted,
+    isMuted,
+    setVolume,
+    getVolume,
+    DEFAULT_TICK,
+  }
+);
 
 export default sonics;

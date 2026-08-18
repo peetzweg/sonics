@@ -22,7 +22,7 @@ Once you can describe a sound in a handful of numbers, you don't need the file. 
 A pnpm monorepo (structure inspired by [web-haptics](https://github.com/lochie/web-haptics)):
 
 ```
-packages/sonics   → the library (published as "sonics"): core + /react, built with tsup
+packages/sonics   → the library (published as "sonics"): core + /react + /presets, built with tsup
 site             → the playground: design a sound, hear it, export it
 apps/react-example
 apps/vanilla-example
@@ -57,6 +57,7 @@ sonics occupies a specific empty cell: **synth-based** (not file playback), **ta
 - **[sfxr](https://www.drpetter.se/project_sfxr.html)** (DrPetter) and its web ports **[jsfxr](https://github.com/chr15m/jsfxr)** (chr15m) / **[jfxr](https://jfxr.frozenfractal.com/)** (ttencate).
 - **[snd-lib](https://snd.dev/)** — DENTSU INC. + STARRYWORKS inc. The tasteful-UI-sound aesthetic (a crafted sample kit).
 - **[use-sound](https://github.com/joshwcomeau/use-sound)** — Josh W. Comeau. For popularising "the web needs more (tasteful) sounds."
+- **[cuelume](https://github.com/Danilaa1/cuelume)** — Daniel Belyi. Seventeen designed interaction sounds, MIT, ported into `sonics/presets` with the licence notice intact. cuelume builds a sound from layers (a tone with an envelope and an optional pitch glide, or filtered noise) rather than from struck resonators; teaching the sonics tick to do the same is what made the port possible. The sound design is theirs.
 - **ElevenLabs** — whose onboarding click is the sound we reverse-engineered as the default preset.
 
 ## License

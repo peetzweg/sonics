@@ -20,6 +20,16 @@
         "default": "./dist/index.js"
       }
     },
+    "./presets": {
+      "import": {
+        "types": "./dist/presets/index.d.mts",
+        "default": "./dist/presets/index.mjs"
+      },
+      "require": {
+        "types": "./dist/presets/index.d.ts",
+        "default": "./dist/presets/index.js"
+      }
+    },
     "./react": {
       "import": {
         "types": "./dist/react/index.d.mts",

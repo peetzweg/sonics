@@ -8,7 +8,12 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "sonics/react": fileURLToPath(new URL("../packages/sonics/src/react/index.tsx", import.meta.url)),
+      "sonics/react": fileURLToPath(
+        new URL("../packages/sonics/src/react/index.tsx", import.meta.url)
+      ),
+      "sonics/presets": fileURLToPath(
+        new URL("../packages/sonics/src/presets/index.ts", import.meta.url)
+      ),
       sonics: fileURLToPath(new URL("../packages/sonics/src/index.ts", import.meta.url)),
     },
   },

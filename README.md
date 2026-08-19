@@ -1,6 +1,8 @@
 # sonics 🔊
 
-**Tiny, dependency-free UI sounds you can feel.** Synthesised live in the browser with the Web Audio API — no audio files, no network payload, ~3 KB.
+**Tiny, dependency-free UI sound effects for the web.** Synthesise tactile clicks, taps, toggles, confirmations, and other microinteraction sounds live in the browser with the Web Audio API — no audio files, no network payload, ~3 KB.
+
+[Try the Web Audio API sound playground](https://peetzweg.github.io/sonics/) · [Read the library API](./packages/sonics/README.md) · `npm install sonics`
 
 sonics is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object — so you can design one in the playground, copy the spec, and drop it in anywhere.
 
@@ -10,6 +12,10 @@ sonics("click"); // that's it
 ```
 
 > The audio sibling of [`web-haptics`](https://github.com/lochie/web-haptics): haptic feedback ↔ sonic feedback for the web.
+
+## Web Audio API UI sound effects
+
+`sonics` is a JavaScript and TypeScript sound-effect library for websites and web apps. It generates short, tasteful interface sounds from small serialisable specs, with optional React bindings — ideal for buttons, switches, form feedback, navigation, and other UI microinteractions.
 
 ## The story
 

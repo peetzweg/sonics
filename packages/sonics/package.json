@@ -57,12 +57,17 @@
   },
   "keywords": [
     "web-audio",
+    "web-audio-api",
     "sound",
     "ui",
+    "ui-sounds",
     "microinteraction",
+    "microinteractions",
     "click",
     "sound-effects",
     "synthesis",
+    "audio-synthesis",
+    "browser-audio",
     "haptics",
     "react",
     "zero-dependency"

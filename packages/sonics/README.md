@@ -2,7 +2,7 @@
 
 **Tiny, dependency-free UI sounds you can feel.** Synthesised in the browser with the Web Audio API — no audio files, no network payload, ~3 KB.
 
-`sonics` is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object, so you can design one in the [playground](https://github.com/OWNER/sonics), copy the spec, and replay it anywhere.
+`sonics` is the audio sibling of a haptics library: a small kit for adding _tasteful_ microinteraction sounds (clicks, taps, toggles, confirmations) to a web UI. Every sound is a plain, serialisable object, so you can design one in the [Web Audio API playground](https://peetzweg.github.io/sonics/), copy the spec, and replay it anywhere.
 
 ```js
 import sonics from "sonics";
